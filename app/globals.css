@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* FRED Design System - Warm Sage Theme */
+    --background: 80 20% 98%; /* #FAFBF8 */
+    --foreground: 154 10% 10%; /* Dark Green/Gray for text */
+    
+    --card: 0 0% 100%;
+    --card-foreground: 154 10% 10%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 154 10% 10%;
+    
+    --primary: 154 14% 49%; /* #6B8E7F Warm Sage */
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 30 50% 64%; /* #D4A574 Warm Amber */
+    --secondary-foreground: 0 0% 100%;
+    
+    --muted: 80 10% 94%;
+    --muted-foreground: 154 5% 40%;
+    
+    --accent: 30 30% 96%;
+    --accent-foreground: 30 50% 40%;
+    
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 154 10% 90%;
+    --input: 154 10% 90%;
+    --ring: 154 14% 49%;
+    
+    --radius: 0.75rem; /* Rounded corners */
+    
+    --chart-1: 154 14% 49%;
+    --chart-2: 30 50% 64%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --background: 154 10% 5%; /* Deep Green/Black */
+    --foreground: 80 20% 98%;
+    
+    --card: 154 10% 8%;
+    --card-foreground: 80 20% 98%;
+    
+    --popover: 154 10% 8%;
+    --popover-foreground: 80 20% 98%;
+    
+    --primary: 154 14% 49%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 30 50% 64%;
+    --secondary-foreground: 0 0% 100%;
+    
+    --muted: 154 10% 15%;
+    --muted-foreground: 154 5% 60%;
+    
+    --accent: 154 10% 15%;
+    --accent-foreground: 80 20% 98%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 154 10% 15%;
+    --input: 154 10% 15%;
+    --ring: 154 14% 49%;
+    
+    --chart-1: 154 14% 49%;
+    --chart-2: 30 50% 64%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  VET
+  ATTENDANT
+  TUTOR
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  password  String
+  role      Role     @default(ATTENDANT)
+  
+  // Relations
+  tutorProfile Tutor?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Tutor {
+  id        String   @id @default(cuid())
+  cpf       String   @unique
+  phone     String?
+  address   String?
+  
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  
+  pets      Pet[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Species {
+  DOG
+  CAT
+  BIRD
+  OTHER
+}
+
+model Pet {
+  id        String   @id @default(cuid())
+  name      String
+  species   Species
+  breed     String?
+  birthDate DateTime?
+  weight    Float?   // in kg
+  photoUrl  String?
+  
+  tutorId   String
+  tutor     Tutor    @relation(fields: [tutorId], references: [id])
+  
+  medicalRecords MedicalRecord[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MedicalRecord {
+  id        String   @id @default(cuid())
+  date      DateTime @default(now())
+  title     String
+  notes     String? // General notes or summary
+
+  // Structured AI Data
+  anamnesis    String?
+  physicalExam String?
+  diagnosis    String?
+  prescription String?
+  
+  petId     String
+  pet       Pet      @relation(fields: [petId], references: [id])
+  
+  vetId     String
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
