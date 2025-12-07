@@ -67,6 +67,7 @@ model Pet {
   tutor     Tutor    @relation(fields: [tutorId], references: [id])
   
   medicalRecords MedicalRecord[]
+  appointments   Appointment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -115,6 +116,7 @@ model Competitor {
   updatedAt DateTime @updatedAt
 }
 
+
 model CompetitorSnapshot {
   id           String     @id @default(cuid())
   date         DateTime   @default(now())
@@ -123,4 +125,43 @@ model CompetitorSnapshot {
   
   competitorId String
   competitor   Competitor @relation(fields: [competitorId], references: [id])
+}
+
+// Agenda & Scheduling
+enum AppointmentType {
+  CONSULT
+  VACCINE
+  EXAM
+  SURGERY
+  OTHER
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELED
+}
+
+model Appointment {
+  id        String            @id @default(cuid())
+  startTime DateTime
+  endTime   DateTime
+  title     String
+  notes     String?
+  
+  type      AppointmentType   @default(CONSULT)
+  status    AppointmentStatus @default(PENDING)
+  
+  // Relations
+  petId     String?
+  pet       Pet?              @relation(fields: [petId], references: [id])
+  
+  vetId     String?           // Ideally this would relate to User, but keeping simple for now
+  
+  // Google Integration
+  googleEventId String?       @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

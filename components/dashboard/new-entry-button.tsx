@@ -12,13 +12,13 @@ import { Button } from "@/components/ui/button"
 import { Plus, Stethoscope, Calendar, Dog, UserPlus } from "lucide-react"
 import Link from 'next/link'
 
-export function NewEntryButton({ className, size = "default", variant = "default" }: { className?: string, size?: "default" | "sm" | "lg" | "icon", variant?: "default" | "outline" | "secondary" | "ghost" | "link" | "destructive" }) {
+export function NewEntryButton({ className, size = "default", variant = "default", label = "Nova Entrada" }: { className?: string, size?: "default" | "sm" | "lg" | "icon", variant?: "default" | "outline" | "secondary" | "ghost" | "link" | "destructive", label?: string }) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button className={className} size={size} variant={variant}>
                     <Plus className="mr-2 h-4 w-4" />
-                    Nova Entrada
+                    {label}
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">

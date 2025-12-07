@@ -24,9 +24,10 @@ export default function DashboardPage() {
             {/* Stats Grid - Nature/Poetry Look */}
             {/* Using a subtle, unified design language that emphasizes the clinic's brand (Green/Nature) */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card className="shadow-sm border-l-4 border-l-gray-300 hover:shadow-md transition-shadow bg-card">
+                <Card className="shadow-sm hover:shadow-md transition-shadow bg-card">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Total Receita</CardTitle>
+                        <CardTitle className="text-sm font-medium font-serif text-muted-foreground">Total Receita</CardTitle>
+
                         <DollarSign className="h-4 w-4 text-primary" />
                     </CardHeader>
                     <CardContent>
@@ -40,9 +41,9 @@ export default function DashboardPage() {
                     </CardContent>
                 </Card>
 
-                <Card className="shadow-sm border-l-4 border-l-gray-300 hover:shadow-md transition-shadow bg-card">
+                <Card className="shadow-sm hover:shadow-md transition-shadow bg-card">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Novos Tutores</CardTitle>
+                        <CardTitle className="text-sm font-medium font-serif text-muted-foreground">Novos Tutores</CardTitle>
                         <Users className="h-4 w-4 text-primary" />
                     </CardHeader>
                     <CardContent>
@@ -56,9 +57,9 @@ export default function DashboardPage() {
                     </CardContent>
                 </Card>
 
-                <Card className="shadow-sm border-l-4 border-l-gray-300 hover:shadow-md transition-shadow bg-card">
+                <Card className="shadow-sm hover:shadow-md transition-shadow bg-card">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Consultas</CardTitle>
+                        <CardTitle className="text-sm font-medium font-serif text-muted-foreground">Consultas</CardTitle>
                         <Stethoscope className="h-4 w-4 text-primary" />
                     </CardHeader>
                     <CardContent>
@@ -72,9 +73,9 @@ export default function DashboardPage() {
                     </CardContent>
                 </Card>
 
-                <Card className="shadow-sm border-l-4 border-l-gray-300 hover:shadow-md transition-shadow bg-card">
+                <Card className="shadow-sm hover:shadow-md transition-shadow bg-card">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Ocupação</CardTitle>
+                        <CardTitle className="text-sm font-medium font-serif text-muted-foreground">Ocupação</CardTitle>
                         <Activity className="h-4 w-4 text-secondary" />
                     </CardHeader>
                     <CardContent>
@@ -95,11 +96,11 @@ export default function DashboardPage() {
 
                 {/* Sidebar - Calendar & Quick Actions - Takes 1/3 */}
                 <div className="space-y-6">
-                    <CalendarView />
+                    <CalendarView initialDate={new Date()} />
 
                     <Card className="bg-gradient-to-br from-primary to-primary/80 text-white border-none shadow-lg">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-lg">
+                            <CardTitle className="flex items-center gap-2 text-lg font-serif">
                                 <TrendingUp className="h-5 w-5 text-white/80" />
                                 Insights IA
                             </CardTitle>

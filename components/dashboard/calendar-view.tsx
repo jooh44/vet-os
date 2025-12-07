@@ -6,13 +6,56 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isSameDay, isToday } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { useRouter } from 'next/navigation';
 
-export function CalendarView() {
-    const [currentDate, setCurrentDate] = React.useState(new Date());
-    const [selectedDate, setSelectedDate] = React.useState(new Date());
+export function CalendarView({
+    initialDate = new Date(),
+    highlights = []
+}: {
+    initialDate?: Date,
+    highlights?: number[]
+}) {
+    // Current viewed month (can start different from initialDate/selectedDate)
+    const [currentDate, setCurrentDate] = React.useState(initialDate);
+    // Selected date (from URL props usually)
+    const [selectedDate, setSelectedDate] = React.useState(initialDate);
+    // Highlights for the VIEWED month
+    const [monthHighlights, setMonthHighlights] = React.useState<number[]>(highlights);
+
+    const router = useRouter();
 
     const nextMonth = () => setCurrentDate(addMonths(currentDate, 1));
     const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
+
+    // Effect: Update local selectedDate if initialDate prop changes (external navigation)
+    React.useEffect(() => {
+        setSelectedDate(initialDate);
+        // If the NEW selected date is in a different month than currently viewing, switch view
+        if (!isSameMonth(initialDate, currentDate)) {
+            setCurrentDate(initialDate);
+        }
+    }, [initialDate]);
+
+    // Effect: Fetch highlights when VIEWED month changes
+    React.useEffect(() => {
+        const fetchHighlights = async () => {
+            // Need to import dynamically to avoid client/server issues? No, standard import.
+            const { getMonthlyHighlights } = await import('@/app/lib/actions/appointment-actions');
+            const res = await getMonthlyHighlights(currentDate);
+            if (res?.data) {
+                setMonthHighlights(res.data as number[]);
+            }
+        };
+        fetchHighlights();
+    }, [currentDate]);
+
+    const handleDateClick = (day: Date) => {
+        setSelectedDate(day);
+        // Use router to update URL, forcing page reload (Server Component) with new date
+        // Format as YYYY-MM-DD for consistency
+        const dateStr = day.toISOString().split('T')[0];
+        router.push(`/dashboard/agenda?date=${dateStr}`);
+    };
 
     const monthStart = startOfMonth(currentDate);
     const monthEnd = endOfMonth(monthStart);
@@ -27,7 +70,7 @@ export function CalendarView() {
     return (
         <div className="p-4 bg-white rounded-xl shadow-sm border border-border">
             <div className="flex items-center justify-between mb-4">
-                <span className="text-lg font-bold text-gray-700 capitalize">
+                <span className="text-lg font-bold font-serif text-gray-700 capitalize">
                     {format(currentDate, 'MMMM yyyy', { locale: ptBR })}
                 </span>
                 <div className="flex gap-1">
@@ -54,14 +97,13 @@ export function CalendarView() {
                     const isCurrentMonth = isSameMonth(day, monthStart);
                     const isTodayDate = isToday(day);
 
-                    // Deterministic mock for appointments to avoid hydration mismatch
-                    // e.g., show dots on even days of the current month
-                    const hasAppointments = (day.getDate() % 2 === 0 || day.getDate() % 5 === 0) && isCurrentMonth;
+                    // Real highlight logic
+                    const hasAppointments = isCurrentMonth && monthHighlights.includes(day.getDate());
 
                     return (
                         <div key={day.toString()} className="flex flex-col items-center justify-center p-1 relative">
                             <button
-                                onClick={() => setSelectedDate(day)}
+                                onClick={() => handleDateClick(day)}
                                 className={cn(
                                     "h-8 w-8 rounded-full flex items-center justify-center transition-colors relative z-10 text-xs",
                                     !isCurrentMonth && "text-gray-300",
@@ -74,8 +116,7 @@ export function CalendarView() {
                             </button>
                             {hasAppointments && !isSelected && (
                                 <span className={cn(
-                                    "absolute bottom-1 h-1 w-1 rounded-full",
-                                    day.getDate() % 5 === 0 ? "bg-red-400" : "bg-primary/60"
+                                    "absolute bottom-1 h-1 w-1 rounded-full bg-primary/60"
                                 )} />
                             )}
                         </div>
@@ -87,8 +128,8 @@ export function CalendarView() {
                 <p className="text-xs text-muted-foreground text-center">
                     Selecionado: <span className="font-medium text-foreground">{format(selectedDate, "dd 'de' MMMM", { locale: ptBR })}</span>
                 </p>
-                <Button className="w-full mt-3 text-xs h-8" variant="outline">
-                    Ver Agenda Completa
+                <Button className="w-full mt-3 text-xs h-8" variant="outline" onClick={() => handleDateClick(new Date())}>
+                    Ver Hoje
                 </Button>
             </div>
         </div>

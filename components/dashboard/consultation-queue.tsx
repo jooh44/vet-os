@@ -77,7 +77,7 @@ export function ConsultationQueue() {
         <Card className="h-full border-none shadow-none bg-transparent">
             <CardHeader className="px-0 pt-0 pb-4 flex flex-row items-center justify-between">
                 <div className="flex flex-col gap-1">
-                    <CardTitle className="text-xl font-bold text-gray-800">Fila de Atendimento</CardTitle>
+                    <CardTitle className="text-xl font-bold font-serif text-gray-800">Fila de Atendimento</CardTitle>
                     <p className="text-sm text-muted-foreground">4 pacientes agendados para hoje</p>
                 </div>
                 <NewEntryButton size="sm" className="bg-primary shadow-sm hover:translate-y-[-1px] transition-transform" />
