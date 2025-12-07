@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Activity, CreditCard, DollarSign, Users, TrendingUp, Calendar as CalIcon, Stethoscope, ArrowUpRight } from "lucide-react"
 import { CalendarView } from "@/components/dashboard/calendar-view"
 import { ConsultationQueue } from "@/components/dashboard/consultation-queue"
-import { Button } from "@/components/ui/button"
+
 
 export default function DashboardPage() {
     return (
@@ -108,9 +108,7 @@ export default function DashboardPage() {
                             <p className="text-sm text-white/90 leading-relaxed">
                                 A procura por vacinas de gripe aumentou <strong>15%</strong> nesta semana devido à frente fria.
                             </p>
-                            <Button variant="secondary" size="sm" className="w-full font-semibold text-primary">
-                                Ver Detalhes no Farejador
-                            </Button>
+
                         </CardContent>
                     </Card>
                 </div>

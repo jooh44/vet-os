@@ -59,6 +59,10 @@ model Pet {
   weight    Float?   // in kg
   photoUrl  String?
   
+  // Medical Info
+  allergies String?
+  notes     String?
+  
   tutorId   String
   tutor     Tutor    @relation(fields: [tutorId], references: [id])
   
@@ -87,4 +91,36 @@ model MedicalRecord {
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// Market Intelligence (Farejador)
+model Competitor {
+  id        String   @id @default(cuid())
+  name      String
+  address   String?
+  placeId   String?  @unique // Google Place ID to avoid duplicates
+  website   String?
+  phone     String?
+  instagram String?
+  facebook  String?
+  
+  rating    Float?
+  reviews   Int?
+  
+  latestHighlights String[]
+  
+  snapshots CompetitorSnapshot[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CompetitorSnapshot {
+  id           String     @id @default(cuid())
+  date         DateTime   @default(now())
+  rating       Float?
+  reviewCount  Int?
+  
+  competitorId String
+  competitor   Competitor @relation(fields: [competitorId], references: [id])
 }

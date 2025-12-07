@@ -24,7 +24,6 @@ const mockLinks = [
     { name: 'Tutores', href: '/dashboard/tutors', icon: Users },
     { name: 'Prontuários', href: '/dashboard/records', icon: FileText },
     { name: 'Consulta IA', href: '/dashboard/consultation', icon: Sparkles },
-    { name: 'Farejador', href: '/dashboard/farejador', icon: Search },
 ];
 
 export default function Sidebar() {

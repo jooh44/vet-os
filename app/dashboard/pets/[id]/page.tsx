@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { MedicalAlertsCard } from '@/components/pets/medical-alerts-card';
+import { PetPhotoUploader } from '@/components/pets/pet-photo-uploader';
 
 export default async function PetProfilePage({ params }: { params: { id: string } }) {
     const pet = await prisma.pet.findUnique({
@@ -48,15 +50,11 @@ export default async function PetProfilePage({ params }: { params: { id: string 
         <div className="flex flex-col gap-6">
             <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
                 <div className="flex items-center gap-4">
-                    <Avatar className="h-20 w-20 border-2 border-primary/10">
-                        {pet.photoUrl ? (
-                            <AvatarImage src={pet.photoUrl} alt={pet.name} className="object-cover" />
-                        ) : (
-                            <AvatarFallback className="bg-orange-100 text-orange-600">
-                                <PawPrint className="h-10 w-10" />
-                            </AvatarFallback>
-                        )}
-                    </Avatar>
+                    <PetPhotoUploader
+                        petId={pet.id}
+                        currentPhotoUrl={pet.photoUrl}
+                        petName={pet.name}
+                    />
                     <div>
                         <h1 className="text-3xl font-bold text-primary">{pet.name}</h1>
                         <p className="text-muted-foreground">{pet.species} • {pet.breed || 'Sem raça definida'}</p>
@@ -114,6 +112,12 @@ export default async function PetProfilePage({ params }: { params: { id: string 
                             <p className="text-xs text-muted-foreground mt-1">{pet.tutor.phone}</p>
                         </CardContent>
                     </Card>
+
+                    <MedicalAlertsCard
+                        petId={pet.id}
+                        initialAllergies={pet.allergies}
+                        initialNotes={pet.notes}
+                    />
                 </div>
 
                 {/* Timeline Main Area */}
