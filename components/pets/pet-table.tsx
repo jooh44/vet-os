@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import { fetchFilteredPets } from "@/app/lib/data"
 import Link from 'next/link'
 import { PawPrint } from "lucide-react"
+import { PetTableRow } from "./pet-table-row"
 
 export default async function PetTable({
     query,
@@ -36,34 +37,7 @@ export default async function PetTable({
                 </TableHeader>
                 <TableBody>
                     {pets?.map((pet) => (
-                        <TableRow key={pet.id}>
-                            <TableCell>
-                                <Avatar>
-                                    {pet.photoUrl ? (
-                                        <AvatarImage src={pet.photoUrl} className="object-cover" />
-                                    ) : (
-                                        <AvatarFallback>
-                                            <PawPrint className="h-4 w-4 text-muted-foreground" />
-                                        </AvatarFallback>
-                                    )}
-                                </Avatar>
-                            </TableCell>
-                            <TableCell className="font-medium">{pet.name}</TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                <Badge variant="outline">{pet.species}</Badge>
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">{pet.breed || '-'}</TableCell>
-                            <TableCell>
-                                <Link href={`/dashboard/tutors/${pet.tutorId}`} className="hover:underline">
-                                    {pet.tutor.user.name}
-                                </Link>
-                            </TableCell>
-                            <TableCell className="text-right">
-                                <Link href={`/dashboard/pets/${pet.id}`} className="text-xs text-blue-500 hover:underline">
-                                    Ver Prontuário
-                                </Link>
-                            </TableCell>
-                        </TableRow>
+                        <PetTableRow key={pet.id} pet={pet} />
                     ))}
                     {pets?.length === 0 && (
                         <TableRow>

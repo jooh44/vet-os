@@ -3,13 +3,16 @@ import Timeline from '@/components/pets/timeline';
 import { notFound } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PawPrint, Weight, Ruler, Calendar } from 'lucide-react';
+import { PawPrint, Weight, Ruler, Calendar, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { MedicalAlertsCard } from '@/components/pets/medical-alerts-card';
 import { PetPhotoUploader } from '@/components/pets/pet-photo-uploader';
+import { EditPetDialog } from '@/components/pets/edit-pet-dialog';
+import { DeletePetButton } from '@/components/pets/delete-pet-button';
+import { PetAudioActions } from '@/components/pets/pet-audio-actions';
 
 export default async function PetProfilePage({ params }: { params: { id: string } }) {
     const pet = await prisma.pet.findUnique({
@@ -61,13 +64,30 @@ export default async function PetProfilePage({ params }: { params: { id: string 
                     </div>
                 </div>
                 <div className="flex gap-2">
+                    <EditPetDialog pet={{
+                        id: pet.id,
+                        name: pet.name,
+                        species: pet.species,
+                        breed: pet.breed,
+                        weight: pet.weight,
+                        birthDate: pet.birthDate,
+                        notes: pet.notes,
+                        allergies: pet.allergies
+                    }} />
+                    <DeletePetButton
+                        petId={pet.id}
+                        petName={pet.name}
+                        redirectOnDelete="/dashboard/patients"
+                    />
                     <Link href={`/dashboard/tutors/${pet.tutor.userId}`}>
                         <Button variant="outline">Ver Tutor</Button>
                     </Link>
                     {/* Add Note/Record Button */}
+                    {/* Add Note/Record Button */}
                     <Link href={`/dashboard/consultation?petId=${pet.id}&petName=${encodeURIComponent(pet.name)}`}>
-                        <Button className="bg-primary hover:bg-primary/90 text-white shadow-sm">
-                            Nova Entrada
+                        <Button className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-md border-none">
+                            <Sparkles className="mr-2 h-4 w-4" />
+                            Iniciar Consulta Inteligente
                         </Button>
                     </Link>
                 </div>
@@ -112,6 +132,10 @@ export default async function PetProfilePage({ params }: { params: { id: string 
                             <p className="text-xs text-muted-foreground mt-1">{pet.tutor.phone}</p>
                         </CardContent>
                     </Card>
+
+                    <div className="pt-2">
+                        <PetAudioActions petId={pet.id} petName={pet.name} />
+                    </div>
 
                     <MedicalAlertsCard
                         petId={pet.id}

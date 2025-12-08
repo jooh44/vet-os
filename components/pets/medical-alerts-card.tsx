@@ -45,7 +45,7 @@ export function MedicalAlertsCard({ petId, initialAllergies, initialNotes }: Med
     };
 
     return (
-        <Card className="h-full border-l-4 border-l-orange-500 shadow-sm">
+        <Card className="h-full shadow-sm">
             <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-base flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4 text-orange-500" />

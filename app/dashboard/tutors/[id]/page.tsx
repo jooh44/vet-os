@@ -6,6 +6,8 @@ import { PlusCircle, PawPrint } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
+import { EditTutorDialog } from '@/components/tutors/edit-tutor-dialog';
+import { DeleteTutorButton } from '@/components/tutors/delete-tutor-button';
 
 export default async function TutorDetailsPage({ params }: { params: { id: string } }) {
     // Determine if ID is Tutor ID or User ID (handling both for robustness)
@@ -28,12 +30,21 @@ export default async function TutorDetailsPage({ params }: { params: { id: strin
                     <h1 className="text-2xl font-bold text-primary">{tutor.user.name}</h1>
                     <p className="text-muted-foreground">{tutor.user.email} • {tutor.phone}</p>
                 </div>
-                <Link href={`/dashboard/tutors/${tutor.id}/new-pet`}>
-                    <Button>
-                        <PlusCircle className="mr-2 h-4 w-4" />
-                        Adicionar Pet
-                    </Button>
-                </Link>
+                <div className="flex gap-2">
+                    <EditTutorDialog tutor={tutor} />
+                    <DeleteTutorButton
+                        tutorId={tutor.id}
+                        tutorName={tutor.user.name || 'Tutor sem nome'}
+                        petCount={tutor.pets.length}
+                        redirectOnDelete="/dashboard/tutors"
+                    />
+                    <Link href={`/dashboard/tutors/${tutor.id}/new-pet`}>
+                        <Button>
+                            <PlusCircle className="mr-2 h-4 w-4" />
+                            Adicionar Pet
+                        </Button>
+                    </Link>
+                </div>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

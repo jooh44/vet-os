@@ -8,8 +8,11 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const lora = Lora({ subsets: ["latin"], variable: "--font-lora" });
 
 export const metadata: Metadata = {
-  title: "VetOS - Sistema Veterinário",
-  description: "Sistema de gestão veterinária com inteligência artificial",
+  title: {
+    template: '%s | Vet.OS',
+    default: 'Vet.OS Dashboard',
+  },
+  description: "Sistema Inteligente de Gestão Veterinária",
 };
 
 export default function RootLayout({

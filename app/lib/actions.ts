@@ -156,7 +156,7 @@ export async function createMedicalRecord(formData: FormData) {
 
         const record = await prisma.medicalRecord.create({
             data: {
-                title: `Consulta IA - ${new Date().toLocaleDateString('pt-BR')}`,
+                title: `Consulta Inteligente - ${new Date().toLocaleDateString('pt-BR')}`,
                 anamnesis,
                 physicalExam,
                 diagnosis,
@@ -191,5 +191,45 @@ export async function createMedicalRecord(formData: FormData) {
     } catch (error) {
         console.error('Create Record Error:', error);
         return { success: false, error: error instanceof Error ? error.message : 'Erro desconhecido ao salvar.' };
+    }
+}
+
+import { processConsultationAudio } from './ai-actions';
+
+export async function saveQuickNote(formData: FormData) {
+    try {
+        const petId = formData.get('petId') as string;
+        if (!petId) throw new Error("Pet ID is required");
+
+        // 1. Process Audio
+        const aiResult = await processConsultationAudio(formData);
+
+        if (!aiResult.success || !aiResult.data) {
+            throw new Error("Falha na transcrição: " + (aiResult.error || 'Erro desconhecido'));
+        }
+
+        const aiData = aiResult.data;
+
+        // 2. Create Record Directly
+        const record = await prisma.medicalRecord.create({
+            data: {
+                title: `Anotação Rápida - ${new Date().toLocaleDateString('pt-BR')}`,
+                anamnesis: aiData.anamnesis || "Não informado",
+                physicalExam: aiData.physicalExam || "Não informado",
+                diagnosis: aiData.diagnosis || "Não informado",
+                prescription: aiData.prescription || "Não informado",
+                petId: petId,
+                vetId: 'demo-vet-id', // Hardcoded for now
+            }
+        });
+
+        // 3. Revalidate
+        revalidatePath(`/dashboard/pets/${petId}`);
+        revalidatePath('/dashboard/records');
+
+        return { success: true };
+    } catch (error) {
+        console.error("Quick Note Error:", error);
+        return { success: false, error: error instanceof Error ? error.message : String(error) };
     }
 }

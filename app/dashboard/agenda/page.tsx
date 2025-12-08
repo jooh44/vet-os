@@ -143,6 +143,17 @@ export default async function AgendaPage({
                                         </div>
                                     </div>
 
+                                    {event.pet?.id && (
+                                        <div className="mb-2">
+                                            <a
+                                                href={`/dashboard/pets/${event.pet.id}`}
+                                                className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded hover:bg-blue-100 transition-colors font-medium inline-flex items-center gap-1"
+                                            >
+                                                Ver Prontuário
+                                            </a>
+                                        </div>
+                                    )}
+
                                     <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground bg-gray-50/50 p-2 rounded-lg">
                                         {event.vetId && (
                                             <div className="flex items-center gap-1.5">

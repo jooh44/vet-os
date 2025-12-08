@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Loader2, FileText, Sparkles, BrainCircuit } from 'lucide-react';
 import { SubmitButton } from '@/components/submit-button';
 
+import { useEffect } from 'react';
+import { getAudioFromStore, deleteAudioFromStore } from '@/lib/audio-store';
 import { processConsultationAudio } from '@/app/lib/ai-actions';
 import { createMedicalRecord } from '@/app/lib/actions';
 import { generateMedicalRecordHTML } from '@/app/lib/document-generator';
@@ -36,10 +38,31 @@ export default function NewConsultationPage() {
     const [isTranscribing, setIsTranscribing] = useState(false);
     const [aiData, setAiData] = useState<any>(null);
 
+    // Auto-load audio from IndexedDB if audioId is present
+    const audioId = searchParams.get('audioId');
+    const { getAudioFromStore, deleteAudioFromStore } = require('@/lib/audio-store'); // Dynamic import or require inside effect is tricky with server components vs client
+    // Actually standard import at top is fine, but let's use useEffect
+
+    // We need to import at top level really
+
     const handleAudioReady = (blob: Blob) => {
         setAudioBlob(blob);
         console.log('Audio ready:', blob.size, 'bytes', blob instanceof File ? blob.name : 'recorded');
     };
+
+    useEffect(() => {
+        if (audioId) {
+            getAudioFromStore(audioId).then((blob: Blob | null) => {
+                if (blob) {
+                    setAudioBlob(blob);
+                    console.log('Loaded audio from store:', audioId);
+                    // Optional: Clean up store to assume ownership? Or keep it?
+                    // Let's keep it until transcribed or explicit delete? 
+                    // To keep it simple, we don't delete immediately.
+                }
+            });
+        }
+    }, [audioId]);
 
     const handleTranscribe = async () => {
         if (!audioBlob) return;
@@ -123,7 +146,7 @@ export default function NewConsultationPage() {
             <div className="space-y-1">
                 <h1 className="text-3xl font-bold text-primary flex items-center gap-3">
                     <Sparkles className="h-8 w-8 text-secondary" />
-                    Nova Consulta com IA
+                    Nova Consulta Inteligente
                 </h1>
                 <p className="text-muted-foreground text-lg">
                     Grave a conversa ou dite os sintomas. A IA estruturará o prontuário para você.
@@ -176,7 +199,7 @@ export default function NewConsultationPage() {
                                                     className="flex-1 bg-gradient-to-r from-primary to-primary/80 hover:to-primary"
                                                 >
                                                     <Sparkles className="mr-2 h-4 w-4" />
-                                                    {isTranscribing ? 'Analisando...' : 'Gerar Prontuário com IA'}
+                                                    {isTranscribing ? 'Analisando...' : 'Gerar Prontuário Inteligente'}
                                                 </SubmitButton>
                                             )}
                                             <Button

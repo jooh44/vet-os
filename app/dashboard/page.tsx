@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Activity, CreditCard, DollarSign, Users, TrendingUp, Calendar as CalIcon, Stethoscope, ArrowUpRight } from "lucide-react"
 import { CalendarView } from "@/components/dashboard/calendar-view"
 import { ConsultationQueue } from "@/components/dashboard/consultation-queue"
+import { ClockWidget } from "@/components/dashboard/clock-widget"
 
 
 export default function DashboardPage() {
@@ -98,20 +99,7 @@ export default function DashboardPage() {
                 <div className="space-y-6">
                     <CalendarView initialDate={new Date()} />
 
-                    <Card className="bg-gradient-to-br from-primary to-primary/80 text-white border-none shadow-lg">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-lg font-serif">
-                                <TrendingUp className="h-5 w-5 text-white/80" />
-                                Insights IA
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <p className="text-sm text-white/90 leading-relaxed">
-                                A procura por vacinas de gripe aumentou <strong>15%</strong> nesta semana devido à frente fria.
-                            </p>
-
-                        </CardContent>
-                    </Card>
+                    <ClockWidget />
                 </div>
             </div>
         </div>

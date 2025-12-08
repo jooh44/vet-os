@@ -23,7 +23,7 @@ const mockLinks = [
     { name: 'Pacientes', href: '/dashboard/patients', icon: Dog },
     { name: 'Tutores', href: '/dashboard/tutors', icon: Users },
     { name: 'Prontuários', href: '/dashboard/records', icon: FileText },
-    { name: 'Consulta IA', href: '/dashboard/consultation', icon: Sparkles },
+    { name: 'Consulta Inteligente', href: '/dashboard/consultation', icon: Sparkles },
 ];
 
 export default function Sidebar() {
@@ -32,7 +32,7 @@ export default function Sidebar() {
     return (
         <div className="flex h-full flex-col bg-card border-r border-border shadow-sm">
             <div className="flex h-20 items-center justify-center border-b border-border px-6">
-                <h1 className="text-2xl font-bold text-primary">VetOS</h1>
+                <h1 className="text-2xl font-bold text-primary">Vet.OS</h1>
             </div>
             <div className="flex-1 overflow-y-auto py-4">
                 <nav className="grid gap-1 px-4">

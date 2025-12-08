@@ -66,6 +66,7 @@ export async function getDailyAppointments(date: Date) {
             include: {
                 pet: {
                     select: {
+                        id: true,
                         name: true,
                         tutor: {
                             select: {

@@ -9,6 +9,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Search } from '@/components/ui/search';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { RecordTableRow } from '@/components/records/record-table-row';
 
 export default async function RecordsListPage({
     searchParams,
@@ -92,44 +93,7 @@ export default async function RecordsListPage({
                                     </TableCell>
                                 </TableRow>
                             ) : records.map((record) => (
-                                <TableRow key={record.id} className="group hover:bg-muted/50 transition-colors">
-                                    <TableCell className="font-medium whitespace-nowrap">
-                                        {format(record.date, "dd/MM/yyyy HH:mm", { locale: ptBR })}
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center gap-3">
-                                            <Avatar className="h-8 w-8">
-                                                <AvatarImage src={record.pet.photoUrl || ''} />
-                                                <AvatarFallback className="text-xs">{record.pet.name.substring(0, 2)}</AvatarFallback>
-                                            </Avatar>
-                                            <div className="flex flex-col">
-                                                <span className="font-semibold text-sm">{record.pet.name}</span>
-                                                <span className="text-xs text-muted-foreground">{record.pet.species}</span>
-                                            </div>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <span className="text-sm">{record.pet.tutor.user.name}</span>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex flex-col gap-1">
-                                            <span className="font-medium text-sm text-primary">{record.title}</span>
-                                            {record.diagnosis && (
-                                                <span className="text-xs text-muted-foreground truncate max-w-[200px]" title={record.diagnosis}>
-                                                    Susp: {record.diagnosis}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        <Link href={`/dashboard/records/${record.id}`}>
-                                            <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <Eye className="mr-2 h-4 w-4" />
-                                                Ver Detalhes
-                                            </Button>
-                                        </Link>
-                                    </TableCell>
-                                </TableRow>
+                                <RecordTableRow key={record.id} record={record} />
                             ))}
                         </TableBody>
                     </Table>
