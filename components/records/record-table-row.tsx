@@ -21,7 +21,7 @@ interface RecordTableRowProps {
             species: string;
             tutor: {
                 user: {
-                    name: string;
+                    name: string | null;
                 }
             }
         }
@@ -56,7 +56,7 @@ export function RecordTableRow({ record }: RecordTableRowProps) {
                 </div>
             </TableCell>
             <TableCell>
-                <span className="text-sm">{record.pet.tutor.user.name}</span>
+                <span className="text-sm">{record.pet.tutor.user.name || 'Sem nome'}</span>
             </TableCell>
             <TableCell>
                 <div className="flex flex-col gap-1">
