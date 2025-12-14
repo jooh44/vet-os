@@ -18,7 +18,7 @@ const localFfmpeg = path.join(process.cwd(), 'node_modules', 'ffmpeg-static', 'f
 
 if (fs.existsSync(localFfmpeg)) {
     ffmpegBinary = localFfmpeg;
-} else if (!fs.existsSync(ffmpegBinary)) {
+} else if (!ffmpegBinary || !fs.existsSync(ffmpegBinary)) {
     // Fallback: try to find it in likely locations
     console.warn("Could not find ffmpeg in standard locations.");
 }

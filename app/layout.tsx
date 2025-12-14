@@ -3,6 +3,8 @@ import { Inter, Lora } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
+import { FredProvider } from "@/components/fred/fred-provider";
+import { FredFloatingWidget } from "@/components/fred/fred-widget";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const lora = Lora({ subsets: ["latin"], variable: "--font-lora" });
@@ -27,8 +29,11 @@ export default function RootLayout({
         inter.variable,
         lora.variable
       )}>
-        {children}
-        <Toaster />
+        <FredProvider>
+          {children}
+          <FredFloatingWidget />
+          <Toaster />
+        </FredProvider>
       </body>
     </html>
   );

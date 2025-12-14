@@ -169,7 +169,7 @@ export default async function AgendaPage({
                                         </div>
                                         {event.notes && (
                                             <div className="w-full mt-1 italic text-xs">
-                                                "{event.notes}"
+                                                &quot;{event.notes}&quot;
                                             </div>
                                         )}
                                     </div>
@@ -180,7 +180,7 @@ export default async function AgendaPage({
                         <div className="p-8 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center text-center text-muted-foreground hover:bg-gray-50/50 transition-colors cursor-pointer">
                             <Clock className="w-8 h-8 mb-2 opacity-50" />
                             <p className="font-medium">Nenhum agendamento para hoje</p>
-                            <p className="text-sm">Clique em "Novo Agendamento" para adicionar</p>
+                            <p className="text-sm">Clique em &quot;Novo Agendamento&quot; para adicionar</p>
                         </div>
                     )}
                 </div>

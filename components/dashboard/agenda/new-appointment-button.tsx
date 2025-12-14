@@ -71,7 +71,7 @@ export function NewAppointmentButton() {
 
         const fetchPets = async () => {
             const results = await searchPets(debouncedQuery);
-            setPets(results);
+            setPets(results.map(p => ({ ...p, tutorName: p.tutorName || '' })));
         };
 
         fetchPets();
@@ -92,7 +92,7 @@ export function NewAppointmentButton() {
         }
         const fetchTutors = async () => {
             const results = await searchTutors(debouncedTutorQuery);
-            setTutors(results);
+            setTutors(results.map(t => ({ ...t, name: t.name || 'Sem nome' })));
         };
         fetchTutors();
     }, [debouncedTutorQuery]);
@@ -247,7 +247,7 @@ export function NewAppointmentButton() {
                                             <CommandList>
                                                 <CommandEmpty className="py-2 px-2 text-sm text-muted-foreground">
                                                     Nenhum tutor encontrado. <br />
-                                                    Use <strong>"{tutorQuery}"</strong> como novo nome.
+                                                    Use <strong>&quot;{tutorQuery}&quot;</strong> como novo nome.
                                                 </CommandEmpty>
                                                 <CommandGroup heading="Tutores Cadastrados">
                                                     {tutors.map((t) => (

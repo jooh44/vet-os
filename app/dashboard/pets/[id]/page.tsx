@@ -13,6 +13,7 @@ import { PetPhotoUploader } from '@/components/pets/pet-photo-uploader';
 import { EditPetDialog } from '@/components/pets/edit-pet-dialog';
 import { DeletePetButton } from '@/components/pets/delete-pet-button';
 import { PetAudioActions } from '@/components/pets/pet-audio-actions';
+import { FredPetContext } from '@/components/pets/fred-pet-context';
 
 export default async function PetProfilePage({ params }: { params: { id: string } }) {
     const pet = await prisma.pet.findUnique({
@@ -51,6 +52,18 @@ export default async function PetProfilePage({ params }: { params: { id: string 
 
     return (
         <div className="flex flex-col gap-6">
+            <FredPetContext
+                pet={{
+                    id: pet.id,
+                    name: pet.name,
+                    species: pet.species,
+                    breed: pet.breed,
+                    weight: pet.weight,
+                    birthDate: pet.birthDate,
+                    tutorName: pet.tutor.user.name || 'Unknown'
+                }}
+                medicalRecords={events}
+            />
             <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
                 <div className="flex items-center gap-4">
                     <PetPhotoUploader
