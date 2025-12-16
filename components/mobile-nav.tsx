@@ -1,6 +1,6 @@
 'use client';
 import { cn } from '@/lib/utils';
-import { Home, Users, Sparkles, Calculator, Pill } from 'lucide-react';
+import { Home, Users, Sparkles, Calculator, Pill, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -10,6 +10,7 @@ export function MobileNav() {
     const links = [
         { name: 'Início', href: '/dashboard', icon: Home },
         { name: 'Pacientes', href: '/dashboard/patients', icon: Users },
+        { name: 'Chat', href: '/dashboard/chat', icon: MessageCircle },
         { name: 'Consulta', href: '/dashboard/consultation', icon: Sparkles, highlight: true },
         // Placeholder links for tools that we are about to build
         //{ name: 'Tools', href: '/dashboard/tools', icon: Calculator },

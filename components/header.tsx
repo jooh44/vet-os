@@ -1,14 +1,7 @@
 import { auth } from '@/auth';
 import { Button } from '@/components/ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { CircleUser, Bell } from 'lucide-react';
+import { Bell } from 'lucide-react';
+import { UserNav } from './user-nav';
 
 export default async function Header() {
     const session = await auth();
@@ -24,22 +17,7 @@ export default async function Header() {
                 <Bell className="h-4 w-4" />
                 <span className="sr-only">Toggle notifications</span>
             </Button>
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="secondary" size="icon" className="rounded-full">
-                        <CircleUser className="h-5 w-5" />
-                        <span className="sr-only">Toggle user menu</span>
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>Perfil</DropdownMenuItem>
-                    <DropdownMenuItem>Configurações</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>Sair</DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+            <UserNav />
             <div className="hidden md:flex flex-col items-end">
                 <span className="text-sm font-medium">{session?.user?.name || session?.user?.email}</span>
                 <span className="text-xs text-muted-foreground">{session?.user?.email}</span>

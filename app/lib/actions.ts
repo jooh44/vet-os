@@ -1,6 +1,6 @@
 'use server'
 
-import { signIn } from '@/auth'
+import { signIn, signOut } from '@/auth'
 import { AuthError } from 'next-auth'
 
 export async function authenticate(
@@ -8,17 +8,25 @@ export async function authenticate(
     formData: FormData,
 ) {
     try {
-        await signIn('credentials', formData)
+        await signIn('credentials', {
+            email: formData.get('email'),
+            password: formData.get('password'),
+            redirect: false
+        });
+
+        return { success: true };
     } catch (error) {
         if (error instanceof AuthError) {
             switch (error.type) {
                 case 'CredentialsSignin':
-                    return 'Invalid credentials.'
+                    return { success: false, message: 'Credenciais Inválidas.' };
                 default:
-                    return 'Something went wrong.'
+                    return { success: false, message: `Erro: ${error.type}` };
             }
         }
-        throw error
+
+        // If it's NOT an AuthError (and not a Redirect since we disabled it), throw it), throw it
+        throw error;
     }
 }
 
@@ -267,4 +275,8 @@ export async function saveQuickNote(formData: FormData) {
         console.error("Quick Note Error:", error);
         return { success: false, error: error instanceof Error ? error.message : String(error) };
     }
+}
+
+export async function handleSignOut() {
+    await signOut({ redirectTo: '/login' });
 }

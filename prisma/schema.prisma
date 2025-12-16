@@ -80,9 +80,23 @@ model Pet {
   tutor     Tutor    @relation(fields: [tutorId], references: [id])
   
   consultations Consultation[]
+  vaccines      Vaccine[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Vaccine {
+  id        String   @id @default(cuid())
+  name      String
+  date      DateTime @default(now())
+  nextDue   DateTime?
+  batch     String?
+  
+  petId     String
+  pet       Pet      @relation(fields: [petId], references: [id])
+
+  createdAt DateTime @default(now())
 }
 
 // RENAMED: MedicalRecord -> Consultation
@@ -135,6 +149,8 @@ model ChatSession {
   id        String   @id @default(cuid())
   status    String   @default("OPEN") // OPEN, ARCHIVED
   
+  accessCode String?  @unique // For secure external access (Magic Link)
+
   vetId     String
   vet       User     @relation("VetChats", fields: [vetId], references: [id])
   
@@ -150,6 +166,7 @@ model ChatSession {
 model ChatMessage {
   id        String   @id @default(cuid())
   content   String
+  type      String   @default("TEXT") // TEXT, IMAGE, AUDIO, SYSTEM
   read      Boolean  @default(false)
   
   senderId  String

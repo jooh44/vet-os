@@ -7,9 +7,10 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import Link from 'next/link'
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react"
+import { MoreHorizontal, Pencil, Trash2, Link as LinkIcon, Check } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { getInviteLink } from "@/lib/portal-actions"
 import {
     Dialog,
     DialogContent,
@@ -70,6 +71,25 @@ export function TutorTableRow({ tutor }: TutorTableRowProps) {
         });
     };
 
+    const handleInvite = async (e: React.MouseEvent) => {
+        e.stopPropagation(); // Keep menu open? or close?
+        // Actually, preventing default on menu item might be tricky.
+        // Let's just do the logic.
+
+        try {
+            const link = await getInviteLink(tutor.id);
+            if (link) {
+                await navigator.clipboard.writeText(link);
+                alert("Link de convite copiado para a área de transferência!");
+            } else {
+                alert("Erro ao gerar link de convite.");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Erro ao copiar link.");
+        }
+    };
+
     return (
         <>
             <TableRow
@@ -112,6 +132,10 @@ export function TutorTableRow({ tutor }: TutorTableRowProps) {
                             <DropdownMenuLabel>Ações</DropdownMenuLabel>
                             <DropdownMenuItem onClick={() => router.push(`/dashboard/tutors/${tutor.userId}`)}>
                                 Ver Detalhes
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleInvite}>
+                                <LinkIcon className="mr-2 h-4 w-4" />
+                                Copiar Convite
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={() => setIsEditOpen(true)}>

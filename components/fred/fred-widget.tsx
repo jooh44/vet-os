@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { useEffect, useRef, useState } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
+import { usePathname } from 'next/navigation';
 
 export function FredFloatingWidget() {
     const { isOpen, toggle, pageContext } = useFred();
@@ -125,6 +126,10 @@ export function FredFloatingWidget() {
         // Add to queue
         setQueue(prev => [...prev, content]);
     };
+
+    // Hide on Chat Pages to avoid overlap
+    const pathname = usePathname();
+    if (pathname?.startsWith('/dashboard/chat')) return null;
 
     return (
         <div className="fixed bottom-24 right-6 md:bottom-6 z-50 flex flex-col items-end gap-2">

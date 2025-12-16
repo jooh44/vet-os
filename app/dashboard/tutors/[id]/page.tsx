@@ -8,6 +8,9 @@ import { notFound } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { EditTutorDialog } from '@/components/tutors/edit-tutor-dialog';
 import { DeleteTutorButton } from '@/components/tutors/delete-tutor-button';
+import { startChat } from '@/lib/chat-actions';
+import { redirect } from 'next/navigation';
+import { MessageSquare } from 'lucide-react';
 
 export default async function TutorDetailsPage({ params }: { params: { id: string } }) {
     // Determine if ID is Tutor ID or User ID (handling both for robustness)
@@ -44,6 +47,16 @@ export default async function TutorDetailsPage({ params }: { params: { id: strin
                             Adicionar Pet
                         </Button>
                     </Link>
+                    <form action={async () => {
+                        'use server';
+                        const chatId = await startChat(tutor.id);
+                        redirect(`/dashboard/chat/${chatId}`);
+                    }}>
+                        <Button variant="secondary" className="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 shadow-sm">
+                            <MessageSquare className="mr-2 h-4 w-4" />
+                            Chat
+                        </Button>
+                    </form>
                 </div>
             </div>
 

@@ -1,18 +1,22 @@
 import Sidebar from '@/components/sidebar';
 import Header from '@/components/header';
 import { MobileNav } from '@/components/mobile-nav';
+import { auth } from '@/auth';
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
+    const session = await auth();
+    const userRole = (session?.user as any)?.role;
+
     return (
         <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
             {/* Desktop Sidebar */}
             <div className="hidden border-r bg-muted/40 md:block">
                 <div className="flex h-full max-h-screen flex-col gap-2">
-                    <Sidebar />
+                    <Sidebar userRole={userRole} />
                 </div>
             </div>
 
