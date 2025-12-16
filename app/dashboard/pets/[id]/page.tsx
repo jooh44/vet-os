@@ -20,7 +20,7 @@ export default async function PetProfilePage({ params }: { params: { id: string 
         where: { id: params.id },
         include: {
             tutor: { include: { user: true } },
-            medicalRecords: { orderBy: { date: 'desc' } }
+            consultations: { orderBy: { date: 'desc' } }
         }
     });
 
@@ -29,7 +29,7 @@ export default async function PetProfilePage({ params }: { params: { id: string 
     }
 
     // Map records to Timeline events
-    const events = pet.medicalRecords.map((r) => {
+    const events = pet.consultations.map((r: any) => {
         const record = r as any; // Cast to access new AI fields
         // Construct display text for AI records if notes is empty
         let displayNotes = record.notes;
@@ -46,12 +46,13 @@ export default async function PetProfilePage({ params }: { params: { id: string 
             date: record.date,
             title: record.title,
             notes: displayNotes || 'Sem detalhes registrados.',
-            type: inferType(record.title)
+            type: inferType(record.title),
+            vitalSigns: record.vitalSigns
         };
     });
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
             <FredPetContext
                 pet={{
                     id: pet.id,
@@ -72,11 +73,13 @@ export default async function PetProfilePage({ params }: { params: { id: string 
                         petName={pet.name}
                     />
                     <div>
-                        <h1 className="text-3xl font-bold text-primary">{pet.name}</h1>
-                        <p className="text-muted-foreground">{pet.species} • {pet.breed || 'Sem raça definida'}</p>
+                        <h1 className="text-2xl md:text-3xl font-bold text-primary">{pet.name}</h1>
+                        <p className="text-muted-foreground text-sm">{pet.species} • {pet.breed || 'Sem raça definida'}</p>
                     </div>
                 </div>
-                <div className="flex gap-2">
+
+                {/* Actions Toolbar - Scrollable on very small screens or wraps */}
+                <div className="flex flex-wrap gap-2 items-center">
                     <EditPetDialog pet={{
                         id: pet.id,
                         name: pet.name,
@@ -93,14 +96,13 @@ export default async function PetProfilePage({ params }: { params: { id: string 
                         redirectOnDelete="/dashboard/patients"
                     />
                     <Link href={`/dashboard/tutors/${pet.tutor.userId}`}>
-                        <Button variant="outline">Ver Tutor</Button>
+                        <Button variant="outline" size="sm">Ver Tutor</Button>
                     </Link>
-                    {/* Add Note/Record Button */}
-                    {/* Add Note/Record Button */}
-                    <Link href={`/dashboard/consultation?petId=${pet.id}&petName=${encodeURIComponent(pet.name)}`}>
-                        <Button className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-md border-none">
-                            <Sparkles className="mr-2 h-4 w-4" />
-                            Iniciar Consulta Inteligente
+
+                    <Link href={`/dashboard/consultation?petId=${pet.id}&petName=${encodeURIComponent(pet.name)}`} className="w-full sm:w-auto">
+                        <Button className="w-full sm:w-auto bg-gradient-to-r from-primary to-[#8CB3A2] hover:from-primary/90 hover:to-[#7E9F90] text-white shadow-lg shadow-emerald-100 dark:shadow-emerald-900 border border-emerald-100/30 transition-all duration-300 transform hover:-translate-y-0.5">
+                            <Sparkles className="mr-2 h-4 w-4 text-emerald-50 animate-pulse" />
+                            Consulta
                         </Button>
                     </Link>
                 </div>
@@ -158,7 +160,7 @@ export default async function PetProfilePage({ params }: { params: { id: string 
                 </div>
 
                 {/* Timeline Main Area */}
-                <div className="md:col-span-3">
+                <div className="md:col-span-3 pr-2">
                     <h2 className="text-xl font-semibold mb-6">Prontuário (Timeline)</h2>
                     {/* @ts-ignore */}
                     <Timeline events={events} />

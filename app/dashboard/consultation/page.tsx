@@ -143,14 +143,36 @@ export default function NewConsultationPage() {
 
     return (
         <div className="flex flex-col gap-6 max-w-5xl mx-auto pb-10">
-            <div className="space-y-1">
-                <h1 className="text-3xl font-bold text-primary flex items-center gap-3">
-                    <Sparkles className="h-8 w-8 text-secondary" />
-                    Nova Consulta Inteligente
-                </h1>
+            <div className="space-y-4">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <h1 className="text-3xl font-bold text-primary flex items-center gap-3">
+                        <Sparkles className="h-8 w-8 text-secondary" />
+                        Nova Consulta
+                    </h1>
+
+                    {/* Mode Toggle */}
+                    <div className="bg-muted p-1 rounded-lg flex gap-1">
+                        <Button variant="ghost" size="sm" className="bg-white shadow-sm text-primary font-medium">
+                            Presencial
+                        </Button>
+                        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
+                            Telemedicina (Chat)
+                        </Button>
+                    </div>
+                </div>
+
                 <p className="text-muted-foreground text-lg">
                     Grave a conversa ou dite os sintomas. A IA estruturará o prontuário para você.
                 </p>
+
+                {/* Compliance Warning (Mock for Telemedicina availability) */}
+                {/* <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-md flex items-start gap-3 text-sm">
+                    <ShieldAlert className="h-5 w-5 shrink-0" />
+                    <div>
+                        <p className="font-bold">Termo de Consentimento Pendente</p>
+                        <p>O tutor ainda não assinou os termos para Telemedicina. <Button variant="link" className="h-auto p-0 underline text-yellow-900">Enviar link para assinatura</Button></p>
+                    </div>
+                </div> */}
             </div>
 
             <div className="grid gap-8 md:grid-cols-2">
@@ -262,6 +284,55 @@ export default function NewConsultationPage() {
                                             defaultValue={aiData.physicalExam}
                                             className="min-h-[150px]"
                                         />
+                                    </div>
+
+                                    {/* Vital Signs Review */}
+                                    <div className="bg-white/50 p-4 rounded-lg border border-green-100 space-y-3">
+                                        <Label className="text-green-800 font-semibold">Sinais Vitais (Extraídos)</Label>
+                                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                                            <div>
+                                                <Label htmlFor="vital_temp" className="text-xs text-muted-foreground">Temp (°C)</Label>
+                                                <Input
+                                                    id="vital_temp"
+                                                    name="vital_temp"
+                                                    defaultValue={aiData.vitalSigns?.temperature}
+                                                    placeholder="38.5"
+                                                    step="0.1"
+                                                    type="number"
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label htmlFor="vital_weight" className="text-xs text-muted-foreground">Peso (kg)</Label>
+                                                <Input
+                                                    id="vital_weight"
+                                                    name="vital_weight"
+                                                    defaultValue={aiData.vitalSigns?.weight}
+                                                    placeholder="10.5"
+                                                    step="0.01"
+                                                    type="number"
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label htmlFor="vital_hr" className="text-xs text-muted-foreground">FC (bpm)</Label>
+                                                <Input
+                                                    id="vital_hr"
+                                                    name="vital_hr"
+                                                    defaultValue={aiData.vitalSigns?.heartRate}
+                                                    placeholder="100"
+                                                    type="number"
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label htmlFor="vital_rr" className="text-xs text-muted-foreground">FR (rpm)</Label>
+                                                <Input
+                                                    id="vital_rr"
+                                                    name="vital_rr"
+                                                    defaultValue={aiData.vitalSigns?.respiratoryRate}
+                                                    placeholder="20"
+                                                    type="number"
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="diagnosis">Suspeita Diagnóstica</Label>

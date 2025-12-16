@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import {
-    LayoutDashboard,
+    Home,
     Users,
     Calendar,
     Dog,
@@ -18,8 +18,7 @@ import {
 import { signOut } from 'next-auth/react';
 
 const mockLinks = [
-    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Agenda', href: '/dashboard/agenda', icon: Calendar },
+    { name: 'Início', href: '/dashboard', icon: Home },
     { name: 'Pacientes', href: '/dashboard/patients', icon: Dog },
     { name: 'Tutores', href: '/dashboard/tutors', icon: Users },
     { name: 'Prontuários', href: '/dashboard/records', icon: FileText },

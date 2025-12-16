@@ -30,7 +30,7 @@ export default async function RecordsListPage({
         ] as any
     } : {};
 
-    const records = await prisma.medicalRecord.findMany({
+    const records = await prisma.consultation.findMany({
         where,
         orderBy: { date: 'desc' },
         include: {
@@ -40,9 +40,9 @@ export default async function RecordsListPage({
                         include: { user: true }
                     }
                 }
-            }
+            },
+            vet: true
         },
-        take: 20, // Simplified pagination for V1
     });
 
     return (

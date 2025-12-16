@@ -20,10 +20,17 @@ model User {
   email     String   @unique
   password  String
   role      Role     @default(ATTENDANT)
-  
+
   // Relations
   tutorProfile Tutor?
+  consultations Consultation[]    // If user is a Vet
   
+  // Chat Relations
+  sentMessages     ChatMessage[]  @relation("SentMessages")
+  startedChats     ChatSession[]  @relation("VetChats")
+  
+  calculationLogs  CalculationLog[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -34,11 +41,17 @@ model Tutor {
   phone     String?
   address   String?
   
+  // Compliance / Legal
+  consentAccepted Boolean   @default(false)
+  consentDate     DateTime?
+  consentVersion  String?   // [PM Input] Track version of terms signed
+
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id])
   
   pets      Pet[]
-  
+  chatSessions ChatSession[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -66,102 +79,115 @@ model Pet {
   tutorId   String
   tutor     Tutor    @relation(fields: [tutorId], references: [id])
   
-  medicalRecords MedicalRecord[]
-  appointments   Appointment[]
+  consultations Consultation[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model MedicalRecord {
+// RENAMED: MedicalRecord -> Consultation
+// This is now the core entity.
+model Consultation {
   id        String   @id @default(cuid())
   date      DateTime @default(now())
-  title     String
-  notes     String? // General notes or summary
+  title     String   // e.g., "Routine Checkup" or "Emergency"
 
-  // Structured AI Data
+  // AI & Audio Data
+  audioUrl       String?
+  soapTranscript Json?    // Structured SOAP (Subjective, Objective, Assessment, Plan)
+  summary        String?  // AI Summary
+
+  // Standard Clinical Data (Backward compatibility/Structured)
   anamnesis    String?
   physicalExam String?
   diagnosis    String?
   prescription String?
+  vitalSigns   Json?    // { temp: 38, heartRate: 100, respiratoryRate: 20, weight: 10, capillaryFill: 2, hydration: "Normal" }
   
   petId     String
   pet       Pet      @relation(fields: [petId], references: [id])
   
   vetId     String
+  vet       User     @relation(fields: [vetId], references: [id])
   
+  documents Document[] @relation("ConsultationDocs")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-// Market Intelligence (Farejador)
-model Competitor {
+// NEW: Document Storage (PDFs with Hash)
+model Document {
   id        String   @id @default(cuid())
   name      String
-  address   String?
-  placeId   String?  @unique // Google Place ID to avoid duplicates
-  website   String?
-  phone     String?
-  instagram String?
-  facebook  String?
+  url       String
+  type      String   // PRESCRIPTION, CONSENT, EXAM_RESULT
+  hash      String?  // For validation/integrity
   
-  rating    Float?
-  reviews   Int?
+  consultationId String?
+  consultation   Consultation? @relation("ConsultationDocs", fields: [consultationId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+// NEW: Clinical Chat (Vet <-> Tutor)
+model ChatSession {
+  id        String   @id @default(cuid())
+  status    String   @default("OPEN") // OPEN, ARCHIVED
   
-  latestHighlights String[]
+  vetId     String
+  vet       User     @relation("VetChats", fields: [vetId], references: [id])
   
-  snapshots CompetitorSnapshot[]
+  tutorId   String
+  tutor     Tutor    @relation(fields: [tutorId], references: [id])
+  
+  messages  ChatMessage[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-
-model CompetitorSnapshot {
-  id           String     @id @default(cuid())
-  date         DateTime   @default(now())
-  rating       Float?
-  reviewCount  Int?
+model ChatMessage {
+  id        String   @id @default(cuid())
+  content   String
+  read      Boolean  @default(false)
   
-  competitorId String
-  competitor   Competitor @relation(fields: [competitorId], references: [id])
+  senderId  String
+  sender    User     @relation("SentMessages", fields: [senderId], references: [id])
+  
+  sessionId String
+  session   ChatSession @relation(fields: [sessionId], references: [id])
+
+  createdAt DateTime @default(now())
 }
 
-// Agenda & Scheduling
-enum AppointmentType {
-  CONSULT
-  VACCINE
-  EXAM
-  SURGERY
-  OTHER
-}
-
-enum AppointmentStatus {
-  PENDING
-  CONFIRMED
-  COMPLETED
-  CANCELED
-}
-
-model Appointment {
-  id        String            @id @default(cuid())
-  startTime DateTime
-  endTime   DateTime
-  title     String
-  notes     String?
+// NEW: Clinical Tools (Mobile First)
+model Drug {
+  id          String   @id @default(cuid())
+  name        String   // e.g., "Amoxicilina"
+  description String?
+  category    String?  // Antibiótico, Analgésico
+  mechanism   String?
   
-  type      AppointmentType   @default(CONSULT)
-  status    AppointmentStatus @default(PENDING)
+  // Dosage Info
+  defaultDoseMgKg Float? // Standard dose
+  presentation    String? // e.g. "Comprimidos 500mg"
   
-  // Relations
-  petId     String?
-  pet       Pet?              @relation(fields: [petId], references: [id])
-  
-  vetId     String?           // Ideally this would relate to User, but keeping simple for now
-  
-  // Google Integration
-  googleEventId String?       @unique
+  contraindications String[]
+  interactions      String[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model CalculationLog {
+  id        String   @id @default(cuid())
+  type      String   // DOSE, FLUID, CRIT_CARE
+  input     Json     // { weight: 10, dose: 25 ... }
+  result    String
+  
+  date      DateTime @default(now())
+  
+  vetId     String
+  vet       User     @relation(fields: [vetId], references: [id])
 }

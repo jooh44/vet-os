@@ -3,11 +3,11 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface PageContextType {
-    // Define the structure of your page context here
-    // For example:
-    // title?: string;
-    // description?: string;
-    // data?: any;
+    petId?: string;
+    petName?: string;
+    tutorId?: string;
+    consultationId?: string;
+    data?: any;
 }
 
 interface FredContextType {

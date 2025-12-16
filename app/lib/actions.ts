@@ -142,6 +142,14 @@ export async function createMedicalRecord(formData: FormData) {
         const prescription = formData.get('prescription') as string;
         const petId = formData.get('petId') as string;
 
+        // Extract Vitals
+        const vitalSigns = {
+            temperature: formData.get('vital_temp'),
+            weight: formData.get('vital_weight'),
+            heartRate: formData.get('vital_hr'),
+            respiratoryRate: formData.get('vital_rr'),
+        };
+
         if (!petId) {
             return { success: false, error: 'Erro: Nenhum paciente foi selecionado.' };
         }
@@ -154,15 +162,25 @@ export async function createMedicalRecord(formData: FormData) {
             return { success: false, error: 'Paciente não encontrado.' };
         }
 
-        const record = await prisma.medicalRecord.create({
+        // Fallback Auth Logic
+        const session = await auth();
+        let vetId = session?.user?.id;
+        if (!vetId) {
+            const fallbackUser = await prisma.user.findFirst();
+            if (fallbackUser) vetId = fallbackUser.id;
+            else throw new Error("Nenhum usuário encontrado no sistema.");
+        }
+
+        const record = await prisma.consultation.create({
             data: {
                 title: `Consulta Inteligente - ${new Date().toLocaleDateString('pt-BR')}`,
                 anamnesis,
                 physicalExam,
                 diagnosis,
                 prescription,
+                vitalSigns: vitalSigns,
                 petId: pet.id,
-                vetId: 'demo-vet-id',
+                vetId: vetId,
             },
             include: {
                 pet: {
@@ -195,9 +213,24 @@ export async function createMedicalRecord(formData: FormData) {
 }
 
 import { processConsultationAudio } from './ai-actions';
+import { auth } from '@/auth';
+
+// Helper to get active vet ID (Fallback for Dev Mode)
+async function getActiveVetId() {
+    const session = await auth();
+    if (session?.user?.id) return session.user.id;
+
+    // Fallback: Get first user (to allow dev testing without strict auth)
+    const fallbackUser = await prisma.user.findFirst();
+    if (fallbackUser) return fallbackUser.id;
+
+    throw new Error("Nenhum usuário encontrado no sistema para vincular o registro.");
+}
 
 export async function saveQuickNote(formData: FormData) {
     try {
+        const vetId = await getActiveVetId();
+
         const petId = formData.get('petId') as string;
         if (!petId) throw new Error("Pet ID is required");
 
@@ -211,15 +244,17 @@ export async function saveQuickNote(formData: FormData) {
         const aiData = aiResult.data;
 
         // 2. Create Record Directly
-        const record = await prisma.medicalRecord.create({
+        const record = await prisma.consultation.create({
             data: {
                 title: `Anotação Rápida - ${new Date().toLocaleDateString('pt-BR')}`,
                 anamnesis: aiData.anamnesis || "Não informado",
                 physicalExam: aiData.physicalExam || "Não informado",
                 diagnosis: aiData.diagnosis || "Não informado",
                 prescription: aiData.prescription || "Não informado",
+                vitalSigns: aiData.vitalSigns || {}, // Save extracted vitals
+                summary: "Gerado via Quick Note",
                 petId: petId,
-                vetId: 'demo-vet-id', // Hardcoded for now
+                vetId: vetId,
             }
         });
 

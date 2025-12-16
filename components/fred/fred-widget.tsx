@@ -127,7 +127,7 @@ export function FredFloatingWidget() {
     };
 
     return (
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
+        <div className="fixed bottom-24 right-6 md:bottom-6 z-50 flex flex-col items-end gap-2">
             {/* Chat Window */}
             <div
                 className={cn(
@@ -138,17 +138,32 @@ export function FredFloatingWidget() {
                 )}
             >
                 <Card className="w-[350px] md:w-[400px] h-[500px] shadow-2xl border-2 border-primary/10 flex flex-col">
-                    <CardHeader className="p-4 border-b bg-primary/5 flex flex-row justify-between items-center space-y-0">
-                        <div className="flex items-center gap-2">
-                            <span className="text-xl">🐶</span>
-                            <div>
-                                <h3 className="font-semibold text-sm">Fred Copilot</h3>
-                                <p className="text-xs text-muted-foreground">Seu assistente veterinário</p>
+                    <CardHeader className="p-4 border-b bg-gradient-to-r from-primary/10 to-primary/5 flex flex-col space-y-2">
+                        <div className="flex flex-row justify-between items-center w-full">
+                            <div className="flex items-center gap-2">
+                                <div className="bg-primary/20 p-1.5 rounded-lg">
+                                    <span className="text-xl">🩺</span>
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold text-sm">Fred Clinical Copilot</h3>
+                                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                                        Online
+                                    </p>
+                                </div>
                             </div>
+                            <Button variant="ghost" size="icon" onClick={toggle} className="h-8 w-8 text-black/50 hover:text-black">
+                                <X className="h-4 w-4" />
+                            </Button>
                         </div>
-                        <Button variant="ghost" size="icon" onClick={toggle} className="h-8 w-8">
-                            <X className="h-4 w-4" />
-                        </Button>
+
+                        {/* Trust Badge / Context Indicator */}
+                        {pageContext?.petName && (
+                            <div className="bg-primary/10 border border-primary/20 rounded-md px-3 py-1.5 flex items-center gap-2 text-xs text-primary-700 animate-in fade-in slide-in-from-top-2">
+                                <span className="text-lg">🐕</span>
+                                <span className="font-medium">Contexto Ativo: <strong>{pageContext.petName}</strong></span>
+                            </div>
+                        )}
                     </CardHeader>
 
                     <CardContent className="flex-1 p-0 overflow-hidden">

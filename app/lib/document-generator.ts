@@ -1,13 +1,7 @@
-// Mock functions to generate plausible data if missing
-function getMockVitals() {
-    return {
-        heartRate: Math.floor(Math.random() * (140 - 80) + 80), // 80-140 bpm
-        temp: (Math.random() * (39.2 - 38.0) + 38.0).toFixed(1), // 38.0-39.2 C
-        respRate: Math.floor(Math.random() * (40 - 20) + 20), // 20-40 rpm
-        capillaryRefill: '< 2s',
-        hydration: 'Normal',
-        mucousMembranes: 'Normocoradas'
-    };
+// Helper to safely format vitals
+function formatVital(value: any, unit: string) {
+    if (!value) return '--';
+    return `${value} ${unit}`;
 }
 
 export function generateMedicalRecordHTML(record: any) {
@@ -18,24 +12,41 @@ export function generateMedicalRecordHTML(record: any) {
         anamnesis,
         physicalExam,
         diagnosis,
-        prescription
+        prescription,
+        vitalSigns
     } = record;
 
-    const vitals = getMockVitals();
+    const formattedDate = new Date(date).toLocaleDateString('pt-BR', {
+        day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
 
-    // Check if physical exam already has vitals, if not, append mocked ones for "completeness"
-    const hasVitals = physicalExam?.toLowerCase().includes('bpm');
-    const enrichedPhysicalExam = hasVitals ? physicalExam : `
-        ${physicalExam || ''}
-        <br><br>
-        <strong>Sinais Vitais (Aferidos):</strong><br>
-        - Frequência Cardíaca: ${vitals.heartRate} bpm<br>
-        - Temperatura Retal: ${vitals.temp} °C<br>
-        - Frequência Respiratória: ${vitals.respRate} mpm<br>
-        - TPC: ${vitals.capillaryRefill}<br>
-        - Hidratação: ${vitals.hydration}<br>
-        - Mucosas: ${vitals.mucousMembranes}
-    `;
+    // Generate Vitals HTML
+    let vitalsHtml = '';
+    if (vitalSigns && Object.keys(vitalSigns).length > 0) {
+        vitalsHtml = `
+        <div class="vitals-container">
+            <h3 class="subsection-title">Sinais Vitais</h3>
+            <div class="vitals-grid">
+                <div class="vital-card temp">
+                    <span class="vital-label">Temperatura</span>
+                    <span class="vital-value">${formatVital(vitalSigns.temperature, '°C')}</span>
+                </div>
+                <div class="vital-card weight">
+                    <span class="vital-label">Peso</span>
+                    <span class="vital-value">${formatVital(vitalSigns.weight, 'kg')}</span>
+                </div>
+                <div class="vital-card hr">
+                    <span class="vital-label">Freq. Cardíaca</span>
+                    <span class="vital-value">${formatVital(vitalSigns.heartRate, 'bpm')}</span>
+                </div>
+                <div class="vital-card rr">
+                    <span class="vital-label">Freq. Respiratória</span>
+                    <span class="vital-value">${formatVital(vitalSigns.respiratoryRate, 'rpm')}</span>
+                </div>
+            </div>
+        </div>
+        `;
+    }
 
     return `
 <!DOCTYPE html>
@@ -45,227 +56,260 @@ export function generateMedicalRecordHTML(record: any) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prontuário - ${patientName}</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Open+Sans:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@700&display=swap');
 
         :root {
-            --primary: #2C5F2D;
-            --secondary: #97BC62;
-            --accent: #E8F5E9;
-            --text: #333;
-            --light-text: #666;
-            --border: #ddd;
+            --primary: hsl(154, 14%, 49%); /* Warm Sage */
+            --secondary: hsl(154, 25%, 75%); /* Lighter Sage (Text/Accents) */
+            --accent: hsl(154, 20%, 97%); /* Very Light Sage Background */
+            --text: hsl(154, 10%, 10%); /* Dark Green/Gray */
+            --border: hsl(154, 10%, 90%);
         }
 
         body {
-            font-family: 'Open Sans', sans-serif;
+            font-family: 'Roboto', sans-serif;
             color: var(--text);
             line-height: 1.6;
-            background: #f5f5f5;
             margin: 0;
             padding: 40px;
-            -webkit-print-color-adjust: exact;
+            background: #fff;
         }
 
         .page {
             max-width: 800px;
             margin: 0 auto;
-            background: white;
-            padding: 60px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            position: relative;
         }
 
         /* Header */
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid var(--primary);
+            border-bottom: 2px solid var(--primary);
             padding-bottom: 20px;
             margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
         }
 
-        .logo-area h1 {
-            font-family: 'Merriweather', serif;
+        .logo h1 {
+            font-family: 'Playfair Display', serif;
             color: var(--primary);
             margin: 0;
-            font-size: 28px;
-            letter-spacing: -0.5px;
+            font-size: 32px;
         }
-
-        .logo-area p {
+        .logo p {
             margin: 0;
             color: var(--secondary);
-            font-weight: 600;
-            font-size: 14px;
-            text-transform: uppercase;
+            font-size: 12px;
             letter-spacing: 2px;
-        }
-
-        .doc-meta {
-            text-align: right;
-            font-size: 13px;
-            color: var(--light-text);
-        }
-
-        /* Patient Info Grid */
-        .patient-info {
-            background: var(--accent);
-            padding: 20px;
-            border-radius: 8px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 40px;
-            border-left: 5px solid var(--secondary);
-        }
-
-        .info-item label {
-            display: block;
-            font-size: 11px;
             text-transform: uppercase;
-            color: var(--light-text);
-            font-weight: 700;
-            margin-bottom: 2px;
         }
 
-        .info-item span {
-            font-family: 'Merriweather', serif;
+        .meta {
+            text-align: right;
+            font-size: 12px;
+            color: var(--secondary);
+        }
+
+        /* Patient Info Box */
+        .patient-box {
+            background: var(--accent);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 40px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--secondary);
             font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
             font-size: 16px;
-            color: var(--primary);
+            font-weight: 500;
+            color: #0f172a;
         }
 
-        /* Sections */
+        /* Content Sections */
         .section {
-            margin-bottom: 35px;
+            margin-bottom: 30px;
         }
 
         .section-title {
-            font-family: 'Open Sans', sans-serif;
             font-size: 14px;
-            font-weight: 700;
             text-transform: uppercase;
+            font-weight: 700;
             color: var(--primary);
             border-bottom: 1px solid var(--border);
             padding-bottom: 8px;
             margin-bottom: 15px;
-            letter-spacing: 1px;
         }
 
         .content {
             font-size: 15px;
-            color: #444;
             text-align: justify;
             white-space: pre-wrap;
         }
 
-        /* Special Styling for Diagnosis & Prescription */
-        .diagnosis-box {
-            background: #fff8e1;
+        /* Vitals Grid */
+        .vitals-container {
+            margin-top: 20px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
             padding: 15px;
-            border: 1px solid #ffe0b2;
-            border-radius: 4px;
-            font-weight: 600;
-            color: #e65100;
+        }
+
+        .subsection-title {
+            margin: 0 0 10px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--secondary);
+        }
+
+        .vitals-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .vital-card {
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .vital-card.temp { background: #fef2f2; border: 1px solid #fee2e2; color: #991b1b; }
+        .vital-card.weight { background: #eff6ff; border: 1px solid #dbeafe; color: #1e40af; }
+        .vital-card.hr { background: #fdf2f8; border: 1px solid #fce7f3; color: #9d174d; }
+        .vital-card.rr { background: #f0fdf4; border: 1px solid #dcfce7; color: #166534; }
+
+        .vital-label {
+            display: block;
+            font-size: 10px;
+            text-transform: uppercase;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+
+        .vital-value {
+            display: block;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        /* Highlight Boxes */
+        .diagnosis-box {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            color: #92400e;
         }
 
         .prescription-box {
-            background: #fbfbfb;
-            border: 1px dashed #ccc;
+            font-family: 'Courier New', monospace;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
             padding: 20px;
-            font-family: 'Courier New', Courier, monospace;
             font-size: 14px;
         }
 
         /* Footer */
         footer {
-            margin-top: 80px;
+            margin-top: 60px;
             border-top: 1px solid var(--border);
             padding-top: 30px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
             font-size: 11px;
-            color: var(--light-text);
-        }
-
-        .signature {
-            text-align: center;
-            width: 200px;
-        }
-
-        .signature-line {
-            border-top: 1px solid #333;
-            margin-bottom: 5px;
+            color: var(--secondary);
         }
         
-        @media print {
-            body { background: white; padding: 0; }
-            .page { box-shadow: none; padding: 40px; }
+        .signature-line {
+            width: 200px;
+            border-top: 1px solid #000;
+            margin-top: 40px;
+            padding-top: 5px;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media only screen and (max-width: 600px) {
+            body { padding: 10px; }
+            .page { padding: 20px; }
+            .vitals-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            header { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .meta { text-align: left; margin-top: 5px; }
+            .patient-box { grid-template-columns: 1fr; gap: 15px; }
+            footer { flex-direction: column; gap: 20px; align-items: flex-start; }
+            .signature-line { width: 100%; margin-top: 20px; }
         }
     </style>
 </head>
 <body>
     <div class="page">
         <header>
-            <div class="logo-area">
+            <div class="logo">
                 <h1>FRED VETERINARY</h1>
-                <p>Inteligência Veterinária</p>
+                <p>Clinical Copilot</p>
             </div>
-            <div class="doc-meta">
-                PRONTUÁRIO DIGITAL<br>
-                ID: #${record.id.substring(0, 8).toUpperCase()}<br>
-                Data: ${date}
+            <div class="meta">
+                PRONTUÁRIO #${record.id.substring(0, 8).toUpperCase()}<br>
+                DATA: ${formattedDate}
             </div>
         </header>
 
-        <div class="patient-info">
-            <div class="info-item">
-                <label>Paciente</label>
-                <span>${patientName}</span>
+        <div class="patient-box">
+            <div>
+                <div class="info-label">Paciente</div>
+                <div class="info-value">${patientName}</div>
             </div>
-            <div class="info-item">
-                <label>Tutor Responsável</label>
-                <span>${tutorName}</span>
+            <div>
+                <div class="info-label">Tutor</div>
+                <div class="info-value">${tutorName}</div>
             </div>
         </div>
 
-        <main>
-            <div class="section">
-                <div class="section-title">Anamnese & Histórico</div>
-                <div class="content">${anamnesis || '<em>Não informado.</em>'}</div>
-            </div>
+        <div class="section">
+            <div class="section-title">Anamnese</div>
+            <div class="content">${anamnesis || 'Não informado.'}</div>
+        </div>
 
-            <div class="section">
-                <div class="section-title">Exame Físico & Sinais Vitais</div>
-                <div class="content">${enrichedPhysicalExam}</div>
+        <div class="section">
+            <div class="section-title">Exame Físico</div>
+            <div class="content">
+                ${physicalExam || 'Não informado.'}
+                ${vitalsHtml}
             </div>
+        </div>
 
-            <div class="section">
-                <div class="section-title">Hipótese Diagnóstica</div>
-                <div class="content diagnosis-box">
-                    ${diagnosis || 'Em análise clínica.'}
-                </div>
+        <div class="section">
+            <div class="section-title">Diagnóstico</div>
+            <div class="content diagnosis-box">
+                ${diagnosis || 'Em análise.'}
             </div>
+        </div>
 
-            <div class="section">
-                <div class="section-title">Conduta Terapêutica / Prescrição</div>
-                <div class="content prescription-box">
-                    ${prescription || 'Sem prescrição medicamentosa no momento.'}
-                </div>
+        <div class="section">
+            <div class="section-title">Prescrição</div>
+            <div class="content prescription-box">
+                ${prescription || 'Sem prescrição.'}
             </div>
-        </main>
+        </div>
 
         <footer>
             <div>
-                <strong>Clínica Veterinária Modelo</strong><br>
-                Rua das Flores, 123 - São Paulo/SP<br>
-                (11) 99999-9999 | contato@vetmodelo.com.br
+                <strong>Fred Veterinary Clinic</strong><br>
+                Tecnologia e Cuidado para seu pet.
             </div>
-            <div class="signature">
-                <div class="signature-line"></div>
-                <strong>Dr(a). Veterinário(a)</strong><br>
-                CRMV-SP 12.345
+            <div class="signature-line">
+                Assinatura do Veterinário
             </div>
         </footer>
     </div>

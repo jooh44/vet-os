@@ -131,7 +131,14 @@ export async function processConsultationAudio(formData: FormData) {
                     
                     Return ONLY the JSON with the following fields:
                     - anamnesis: (String) Summary of the history/complaint.
-                    - physicalExam: (String) Objective findings (temp, weight, etc).
+                    - physicalExam: (String) Objective findings (general state, mucous membranes, etc).
+                    - vitalSigns: (Object) Extract specific values if present:
+                        - temperature: (Number or String) e.g. 38.5
+                        - weight: (Number or String) e.g. 10.5
+                        - heartRate: (Number or String) e.g. 120
+                        - respiratoryRate: (Number or String) e.g. 30
+                        - capillaryRefill: (String) e.g. "2s"
+                        - hydration: (String) e.g. "Normal"
                     - diagnosis: (String) Suspected or confirmed diagnosis.
                     - prescription: (String) List of medications and instructions.
                     
@@ -155,9 +162,13 @@ export async function processConsultationAudio(formData: FormData) {
 
     } catch (error) {
         console.error('AI Processing Error:', error);
+        // Better error message for debugging
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.error(`Stack Trace:`, error instanceof Error ? error.stack : 'No stack');
+
         return {
             success: false,
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: errorMessage
         };
     }
 }

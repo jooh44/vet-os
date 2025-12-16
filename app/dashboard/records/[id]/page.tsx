@@ -3,7 +3,7 @@ import prisma from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, Download, ArrowLeft, HeartPulse, Stethoscope, ClipboardList, Pill } from 'lucide-react';
+import { FileText, Download, ArrowLeft, HeartPulse, Stethoscope, ClipboardList, Pill, Thermometer, Weight, Activity, Waves } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -14,7 +14,7 @@ import { DownloadButton } from './download-button';
 // Let's create a specialized client component for the download button.
 
 export default async function RecordDetailsPage({ params }: { params: { id: string } }) {
-    const record = await prisma.medicalRecord.findUnique({
+    const record = await prisma.consultation.findUnique({
         where: { id: params.id },
         include: {
             pet: {
@@ -23,7 +23,8 @@ export default async function RecordDetailsPage({ params }: { params: { id: stri
                         include: { user: true }
                     }
                 }
-            }
+            },
+            vet: true
         }
     });
 
@@ -114,10 +115,44 @@ export default async function RecordDetailsPage({ params }: { params: { id: stri
                             <p className="leading-relaxed whitespace-pre-wrap text-gray-700">
                                 {r.physicalExam || 'Não informado.'}
                             </p>
-                            {/* Mock Vitals Display for UI */}
-                            {(!r.physicalExam || !r.physicalExam.toLowerCase().includes('bpm')) && (
-                                <div className="mt-4 p-4 bg-yellow-50 border border-yellow-100 rounded-md text-sm text-yellow-800">
-                                    <strong>Nota:</strong> Sinais vitais completos serão gerados automaticamente no documento PDF.
+
+                            {/* Vital Signs Grid */}
+                            {r.vitalSigns && Object.keys(r.vitalSigns).length > 0 && (
+                                <div className="mt-6 pt-6 border-t border-border">
+                                    <h4 className="text-sm font-semibold mb-4 text-muted-foreground flex items-center gap-2">
+                                        <HeartPulse className="h-4 w-4" />
+                                        Sinais Vitais
+                                    </h4>
+                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                                        <div className="bg-red-50 p-3 rounded-lg border border-red-100">
+                                            <div className="flex items-center gap-2 text-red-700 mb-1">
+                                                <Thermometer className="h-4 w-4" />
+                                                <span className="text-xs font-semibold">Temperatura</span>
+                                            </div>
+                                            <p className="text-lg font-bold text-red-900">{r.vitalSigns.temperature || '--'} <span className="text-xs font-normal">°C</span></p>
+                                        </div>
+                                        <div className="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                                            <div className="flex items-center gap-2 text-blue-700 mb-1">
+                                                <Weight className="h-4 w-4" />
+                                                <span className="text-xs font-semibold">Peso</span>
+                                            </div>
+                                            <p className="text-lg font-bold text-blue-900">{r.vitalSigns.weight || '--'} <span className="text-xs font-normal">kg</span></p>
+                                        </div>
+                                        <div className="bg-pink-50 p-3 rounded-lg border border-pink-100">
+                                            <div className="flex items-center gap-2 text-pink-700 mb-1">
+                                                <Activity className="h-4 w-4" />
+                                                <span className="text-xs font-semibold">Freq. Cardíaca</span>
+                                            </div>
+                                            <p className="text-lg font-bold text-pink-900">{r.vitalSigns.heartRate || '--'} <span className="text-xs font-normal">bpm</span></p>
+                                        </div>
+                                        <div className="bg-green-50 p-3 rounded-lg border border-green-100">
+                                            <div className="flex items-center gap-2 text-green-700 mb-1">
+                                                <Waves className="h-4 w-4" />
+                                                <span className="text-xs font-semibold">Freq. Respiratória</span>
+                                            </div>
+                                            <p className="text-lg font-bold text-green-900">{r.vitalSigns.respiratoryRate || '--'} <span className="text-xs font-normal">rpm</span></p>
+                                        </div>
+                                    </div>
                                 </div>
                             )}
                         </CardContent>
