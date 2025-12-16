@@ -38,3 +38,6 @@ next-env.d.ts
 
 # security
 vps_key
+vps_key_new
+vps_key_new.pub
+
