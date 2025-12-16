@@ -40,4 +40,6 @@ next-env.d.ts
 vps_key
 vps_key_new
 vps_key_new.pub
+debug_vps.py
+
 
