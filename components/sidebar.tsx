@@ -44,7 +44,9 @@ export default function Sidebar({ userRole }: { userRole?: string }) {
                 <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
                     <ShieldCheck className="h-5 w-5 text-primary" />
                 </div>
-                <h1 className="text-3xl font-normal text-primary">Vet.OS</h1>
+                <h1 className="text-3xl font-normal text-primary flex items-center gap-2">
+                    Vet.OS <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold tracking-wider">BETA</span>
+                </h1>
             </div>
             <div className="flex-1 overflow-y-auto py-4">
                 <nav className="grid gap-1 px-4">

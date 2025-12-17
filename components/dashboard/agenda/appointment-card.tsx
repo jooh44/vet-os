@@ -123,9 +123,9 @@ export function AppointmentCard({ appointment: apt }: AppointmentProps) {
                             </Button>
                         </Link>
                     ) : (
-                        <Button size="sm" variant="outline" className="gap-2 text-indigo-600 border-indigo-200 hover:bg-indigo-50">
+                        <Button size="sm" variant="outline" className="gap-2 text-muted-foreground border-muted-foreground/20 opacity-50 cursor-not-allowed" disabled>
                             <Video className="h-3 w-3" />
-                            Criar Sala
+                            Em Breve
                         </Button>
                     )}
 

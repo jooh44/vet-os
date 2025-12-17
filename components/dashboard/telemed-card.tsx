@@ -40,11 +40,9 @@ export function TelemedCard() {
                         Agenda
                     </Button>
                 </Link>
-                <Link href="/dashboard/consultation" className="flex-1">
-                    <Button className="w-full bg-primary hover:bg-primary/90 text-white shadow-md shadow-primary/20">
-                        Abrir Sala
-                    </Button>
-                </Link>
+                <Button className="w-full bg-muted text-muted-foreground opacity-50 cursor-not-allowed hover:bg-muted" disabled>
+                    Em Breve
+                </Button>
             </CardFooter>
         </Card>
     )

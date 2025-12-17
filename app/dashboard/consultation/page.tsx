@@ -154,8 +154,8 @@ export default function NewConsultationPage() {
                         <Button variant="ghost" size="sm" className="bg-primary text-primary-foreground shadow-sm font-medium hover:bg-primary/90">
                             Presencial
                         </Button>
-                        <Button variant="ghost" size="sm" className="text-muted-foreground hover:bg-primary/10 hover:text-primary">
-                            Telemedicina
+                        <Button variant="ghost" size="sm" className="text-muted-foreground opacity-50 cursor-not-allowed hover:bg-transparent" disabled>
+                            Telemedicina (Em Breve)
                         </Button>
                     </div>
                 </div>
