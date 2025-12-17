@@ -55,7 +55,8 @@ export function ChatInterface({ sessionId, initialMessages, currentUserId, recip
                             id: newMsg.id,
                             content: newMsg.content,
                             senderId: newMsg.senderId,
-                            createdAt: new Date(newMsg.createdAt),
+                            // Fix Timezone: Supabase sends UTC string, sometimes without Z. Force UTC.
+                            createdAt: new Date(newMsg.createdAt.endsWith('Z') ? newMsg.createdAt : newMsg.createdAt + 'Z'),
                             type: newMsg.type || 'TEXT'
                         }];
                     });
