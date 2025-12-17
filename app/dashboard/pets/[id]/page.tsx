@@ -73,7 +73,7 @@ export default async function PetProfilePage({ params }: { params: { id: string 
                         petName={pet.name}
                     />
                     <div>
-                        <h1 className="text-2xl md:text-3xl font-bold text-primary">{pet.name}</h1>
+                        <h1 className="text-3xl md:text-4xl font-normal text-primary">{pet.name}</h1>
                         <p className="text-muted-foreground text-sm">{pet.species} • {pet.breed || 'Sem raça definida'}</p>
                     </div>
                 </div>
@@ -100,8 +100,8 @@ export default async function PetProfilePage({ params }: { params: { id: string 
                     </Link>
 
                     <Link href={`/dashboard/consultation?petId=${pet.id}&petName=${encodeURIComponent(pet.name)}`} className="w-full sm:w-auto">
-                        <Button className="w-full sm:w-auto bg-gradient-to-r from-primary to-[#8CB3A2] hover:from-primary/90 hover:to-[#7E9F90] text-white shadow-lg shadow-emerald-100 dark:shadow-emerald-900 border border-emerald-100/30 transition-all duration-300 transform hover:-translate-y-0.5">
-                            <Sparkles className="mr-2 h-4 w-4 text-emerald-50 animate-pulse" />
+                        <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 border-0 transition-all duration-300 transform hover:-translate-y-0.5">
+                            <Sparkles className="mr-2 h-4 w-4 text-white animate-pulse" />
                             Consulta
                         </Button>
                     </Link>

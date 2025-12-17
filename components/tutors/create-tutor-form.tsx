@@ -74,7 +74,7 @@ export default function CreateTutorForm() {
                 </CardContent>
                 <CardFooter className="flex justify-between">
                     <Link href="/dashboard/tutors">
-                        <Button variant="outline">Cancelar</Button>
+                        <Button variant="outline" className="border-primary/20 text-primary hover:bg-primary/10 hover:text-primary">Cancelar</Button>
                     </Link>
                     <SubmitButton>Cadastrar Tutor</SubmitButton>
                 </CardFooter>

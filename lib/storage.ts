@@ -7,8 +7,12 @@ if (process.env.NODE_ENV === 'production' && (!accessKey || !secretKey)) {
     console.error('CRITICAL SECURITY WARNING: MinIO credentials missing in production!');
 }
 
+const rawEndPoint = process.env.MINIO_ENDPOINT || 'localhost';
+// Remove protocol (http:// or https://) and port if present
+const endPoint = rawEndPoint.replace(/^https?:\/\//, '').split(':')[0];
+
 const minioClient = new Minio.Client({
-    endPoint: process.env.MINIO_ENDPOINT || 'localhost',
+    endPoint: endPoint,
     port: parseInt(process.env.MINIO_PORT || '9000'),
     useSSL: process.env.MINIO_USE_SSL === 'true',
     accessKey: accessKey || 'minioadmin',

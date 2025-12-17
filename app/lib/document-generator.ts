@@ -56,19 +56,23 @@ export function generateMedicalRecordHTML(record: any) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prontuário - ${patientName}</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&display=swap');
 
         :root {
-            --primary: hsl(154, 14%, 49%); /* Warm Sage */
-            --secondary: hsl(154, 25%, 75%); /* Lighter Sage (Text/Accents) */
-            --accent: hsl(154, 20%, 97%); /* Very Light Sage Background */
-            --text: hsl(154, 10%, 10%); /* Dark Green/Gray */
-            --border: hsl(154, 10%, 90%);
+            /* DigitalDog Brand Colors */
+            --primary: #FF7043; /* Brand Orange */
+            --secondary: #131846; /* Navy Blue */
+            --accent: #EC407A; /* Pink */
+            
+            --bg-light: #F8FAFC;
+            --text-dark: #131846;
+            --text-light: #64748B;
+            --border: #E2E8F0;
         }
 
         body {
-            font-family: 'Roboto', sans-serif;
-            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
             line-height: 1.6;
             margin: 0;
             padding: 40px;
@@ -82,7 +86,7 @@ export function generateMedicalRecordHTML(record: any) {
 
         /* Header */
         header {
-            border-bottom: 2px solid var(--primary);
+            border-bottom: 3px solid var(--primary);
             padding-bottom: 20px;
             margin-bottom: 40px;
             display: flex;
@@ -91,30 +95,40 @@ export function generateMedicalRecordHTML(record: any) {
         }
 
         .logo h1 {
-            font-family: 'Playfair Display', serif;
-            color: var(--primary);
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--secondary);
             margin: 0;
             font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -1px;
         }
+        
+        .logo h1 span {
+            color: var(--primary);
+        }
+
         .logo p {
             margin: 0;
-            color: var(--secondary);
+            color: var(--text-light);
             font-size: 12px;
             letter-spacing: 2px;
             text-transform: uppercase;
+            font-weight: 600;
         }
 
         .meta {
             text-align: right;
             font-size: 12px;
-            color: var(--secondary);
+            color: var(--text-light);
+            font-family: 'Space Grotesk', sans-serif;
         }
 
         /* Patient Info Box */
         .patient-box {
-            background: var(--accent);
-            border-radius: 8px;
-            padding: 20px;
+            background: var(--bg-light);
+            border-left: 4px solid var(--secondary);
+            border-radius: 0 8px 8px 0;
+            padding: 24px;
             margin-bottom: 40px;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -122,25 +136,28 @@ export function generateMedicalRecordHTML(record: any) {
         }
 
         .info-label {
-            font-size: 10px;
+            font-size: 11px;
             text-transform: uppercase;
-            color: var(--secondary);
-            font-weight: 700;
+            color: var(--text-light);
+            font-weight: 600;
             letter-spacing: 0.5px;
+            margin-bottom: 4px;
         }
 
         .info-value {
-            font-size: 16px;
-            font-weight: 500;
-            color: #0f172a;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--secondary);
         }
 
         /* Content Sections */
         .section {
-            margin-bottom: 30px;
+            margin-bottom: 35px;
         }
 
         .section-title {
+            font-family: 'Space Grotesk', sans-serif;
             font-size: 14px;
             text-transform: uppercase;
             font-weight: 700;
@@ -148,101 +165,114 @@ export function generateMedicalRecordHTML(record: any) {
             border-bottom: 1px solid var(--border);
             padding-bottom: 8px;
             margin-bottom: 15px;
+            letter-spacing: 0.5px;
         }
 
         .content {
             font-size: 15px;
             text-align: justify;
             white-space: pre-wrap;
+            color: #334155;
         }
 
         /* Vitals Grid */
         .vitals-container {
-            margin-top: 20px;
+            margin-top: 25px;
             background: #fff;
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 15px;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
 
         .subsection-title {
-            margin: 0 0 10px 0;
+            margin: 0 0 12px 0;
             font-size: 12px;
+            font-weight: 600;
             text-transform: uppercase;
-            color: var(--secondary);
+            color: var(--text-light);
         }
 
         .vitals-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
+            gap: 12px;
         }
 
         .vital-card {
-            padding: 10px;
-            border-radius: 6px;
+            padding: 12px;
+            border-radius: 8px;
             text-align: center;
         }
         
-        .vital-card.temp { background: #fef2f2; border: 1px solid #fee2e2; color: #991b1b; }
-        .vital-card.weight { background: #eff6ff; border: 1px solid #dbeafe; color: #1e40af; }
-        .vital-card.hr { background: #fdf2f8; border: 1px solid #fce7f3; color: #9d174d; }
-        .vital-card.rr { background: #f0fdf4; border: 1px solid #dcfce7; color: #166534; }
+        .vital-card.temp { background: #FFF7ED; color: #C2410C; }
+        .vital-card.weight { background: #F8FAFC; color: #475569; }
+        .vital-card.hr { background: #FDF2F8; color: #DB2777; }
+        .vital-card.rr { background: #F0F9FF; color: #0284C7; }
 
         .vital-label {
             display: block;
             font-size: 10px;
             text-transform: uppercase;
-            opacity: 0.8;
+            font-weight: 600;
+            opacity: 0.7;
             margin-bottom: 4px;
         }
 
         .vital-value {
             display: block;
-            font-size: 16px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 18px;
             font-weight: 700;
         }
 
         /* Highlight Boxes */
         .diagnosis-box {
-            background: #fffbeb;
-            border-left: 4px solid #f59e0b;
-            padding: 15px;
-            color: #92400e;
+            background: #FFF7ED;
+            border-left: 4px solid var(--primary);
+            padding: 16px;
+            color: #9A3412;
+            border-radius: 0 8px 8px 0;
+            font-weight: 500;
         }
 
         .prescription-box {
             font-family: 'Courier New', monospace;
-            background: #f8fafc;
-            border: 1px dashed #cbd5e1;
-            padding: 20px;
+            background: #FFFBEB;
+            color: #78350F;
+            border: 1px solid #FCD34D;
+            border-radius: 8px;
+            padding: 24px;
             font-size: 14px;
+            line-height: 1.6;
         }
 
         /* Footer */
         footer {
-            margin-top: 60px;
+            margin-top: 80px;
             border-top: 1px solid var(--border);
             padding-top: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 11px;
-            color: var(--secondary);
+            color: var(--text-light);
         }
         
         .signature-line {
-            width: 200px;
-            border-top: 1px solid #000;
+            width: 250px;
+            border-top: 1px solid var(--secondary);
             margin-top: 40px;
-            padding-top: 5px;
+            padding-top: 8px;
             text-align: center;
+            font-weight: 500;
+            color: var(--secondary);
         }
 
         /* Responsive */
         @media only screen and (max-width: 600px) {
-            body { padding: 10px; }
-            .page { padding: 20px; }
+            body { padding: 20px; }
+            .page { padding: 0; }
             .vitals-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             header { flex-direction: column; align-items: flex-start; gap: 15px; }
             .meta { text-align: left; margin-top: 5px; }
@@ -256,11 +286,12 @@ export function generateMedicalRecordHTML(record: any) {
     <div class="page">
         <header>
             <div class="logo">
-                <h1>FRED VETERINARY</h1>
-                <p>Clinical Copilot</p>
+                <h1>VET<span>.OS</span></h1>
+                <p>Digital Intelligence for Vets</p>
             </div>
             <div class="meta">
-                PRONTUÁRIO #${record.id.substring(0, 8).toUpperCase()}<br>
+                <strong>PRONTUÁRIO DIGITAL</strong><br>
+                ID: #${record.id.substring(0, 8).toUpperCase()}<br>
                 DATA: ${formattedDate}
             </div>
         </header>
@@ -271,13 +302,13 @@ export function generateMedicalRecordHTML(record: any) {
                 <div class="info-value">${patientName}</div>
             </div>
             <div>
-                <div class="info-label">Tutor</div>
+                <div class="info-label">Tutor (Responsável)</div>
                 <div class="info-value">${tutorName}</div>
             </div>
         </div>
 
         <div class="section">
-            <div class="section-title">Anamnese</div>
+            <div class="section-title">Anamnese & Queixa Principal</div>
             <div class="content">${anamnesis || 'Não informado.'}</div>
         </div>
 
@@ -297,7 +328,7 @@ export function generateMedicalRecordHTML(record: any) {
         </div>
 
         <div class="section">
-            <div class="section-title">Prescrição</div>
+            <div class="section-title">Prescrição e Conduta</div>
             <div class="content prescription-box">
                 ${prescription || 'Sem prescrição.'}
             </div>
@@ -305,11 +336,11 @@ export function generateMedicalRecordHTML(record: any) {
 
         <footer>
             <div>
-                <strong>Fred Veterinary Clinic</strong><br>
-                Tecnologia e Cuidado para seu pet.
+                <strong>Gerado por Vet.OS</strong><br>
+                Tecnologia de ponta para cuidados veterinários.
             </div>
             <div class="signature-line">
-                Assinatura do Veterinário
+                Assinatura do Médico Veterinário
             </div>
         </footer>
     </div>

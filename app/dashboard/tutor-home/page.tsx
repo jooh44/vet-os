@@ -42,7 +42,7 @@ export default async function TutorHomePage() {
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {tutor.pets.map((pet) => (
+                {tutor.pets.map((pet: any) => (
                     <Card key={pet.id} className="overflow-hidden hover:shadow-md transition-all">
                         <CardHeader className="flex flex-row items-center gap-4 bg-muted/50 p-4">
                             <Avatar className="h-16 w-16 border-2 border-background">

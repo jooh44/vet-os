@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isSameDay, isToday } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 
 export function CalendarView({
     initialDate = new Date(),
@@ -39,7 +40,6 @@ export function CalendarView({
     // Effect: Fetch highlights when VIEWED month changes
     React.useEffect(() => {
         const fetchHighlights = async () => {
-            // Need to import dynamically to avoid client/server issues? No, standard import.
             const { getMonthlyHighlights } = await import('@/app/lib/actions/appointment-actions');
             const res = await getMonthlyHighlights(currentDate);
             if (res?.data) {
@@ -47,6 +47,27 @@ export function CalendarView({
             }
         };
         fetchHighlights();
+
+        // Subscribe to Realtime changes for 'Consultation' table
+        const channel = supabase
+            .channel('calendar-highlights')
+            .on(
+                'postgres_changes',
+                {
+                    event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
+                    schema: 'public',
+                    table: 'Consultation'
+                },
+                () => {
+                    // Refetch highlights when DB changes
+                    fetchHighlights();
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
     }, [currentDate]);
 
     const handleDateClick = (day: Date) => {

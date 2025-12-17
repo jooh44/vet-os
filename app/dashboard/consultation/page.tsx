@@ -145,18 +145,17 @@ export default function NewConsultationPage() {
         <div className="flex flex-col gap-6 max-w-5xl mx-auto pb-10">
             <div className="space-y-4">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <h1 className="text-3xl font-bold text-primary flex items-center gap-3">
-                        <Sparkles className="h-8 w-8 text-secondary" />
+                    <h1 className="text-4xl font-normal text-primary flex items-center gap-3">
                         Nova Consulta
                     </h1>
 
                     {/* Mode Toggle */}
                     <div className="bg-muted p-1 rounded-lg flex gap-1">
-                        <Button variant="ghost" size="sm" className="bg-white shadow-sm text-primary font-medium">
+                        <Button variant="ghost" size="sm" className="bg-primary text-primary-foreground shadow-sm font-medium hover:bg-primary/90">
                             Presencial
                         </Button>
-                        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
-                            Telemedicina (Chat)
+                        <Button variant="ghost" size="sm" className="text-muted-foreground hover:bg-primary/10 hover:text-primary">
+                            Telemedicina
                         </Button>
                     </div>
                 </div>
@@ -181,13 +180,13 @@ export default function NewConsultationPage() {
 
                     {/* Step 1: Select Patient */}
                     <div className="space-y-4">
-                        <h2 className="text-lg font-semibold flex items-center gap-2">
-                            <div className="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">1</div>
+                        <h2 className="text-2xl font-normal flex items-center gap-2">
+                            <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center text-base">1</div>
                             Selecione o Paciente
                         </h2>
                         <AsyncPatientSelect onSelect={(id, name) => setSelectedPet({ id, name })} />
                         {selectedPet && (
-                            <div className="text-sm text-green-600 bg-green-50 p-2 rounded border border-green-200">
+                            <div className="text-sm text-primary bg-primary/10 p-2 rounded border border-primary/20">
                                 Paciente selecionado: <strong>{selectedPet.name}</strong>
                             </div>
                         )}
@@ -196,8 +195,8 @@ export default function NewConsultationPage() {
                     {/* Step 2: Audio */}
                     {selectedPet && (
                         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4">
-                            <h2 className="text-lg font-semibold flex items-center gap-2">
-                                <div className="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">2</div>
+                            <h2 className="text-2xl font-normal flex items-center gap-2">
+                                <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center text-base">2</div>
                                 Captura de Áudio
                             </h2>
                             {!audioBlob ? (
@@ -218,7 +217,7 @@ export default function NewConsultationPage() {
                                             {!aiData && (
                                                 <SubmitButton
                                                     onClick={handleTranscribe}
-                                                    className="flex-1 bg-gradient-to-r from-primary to-primary/80 hover:to-primary"
+                                                    className="flex-1 bg-primary hover:bg-primary/90 text-white shadow-md shadow-primary/20"
                                                 >
                                                     <Sparkles className="mr-2 h-4 w-4" />
                                                     {isTranscribing ? 'Analisando...' : 'Gerar Prontuário Inteligente'}
@@ -256,112 +255,158 @@ export default function NewConsultationPage() {
                 {/* Right Column: Review Form */}
                 <div className="space-y-6">
                     {aiData ? (
-                        <Card className="border-green-200 bg-green-50/50 dark:bg-green-900/10 animate-in fade-in duration-500">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2 text-green-700 dark:text-green-400">
-                                    <FileText className="h-5 w-5" />
-                                    3. Revisão do Prontuário
+                        <Card className="border-green-200/50 bg-white/80 dark:bg-green-900/10 shadow-xl backdrop-blur-sm animate-in fade-in slide-in-from-bottom-8 duration-700">
+                            <CardHeader className="border-b border-border/5 bg-muted/20 pb-6">
+                                <CardTitle className="flex items-center gap-3 text-2xl text-green-700 dark:text-green-400">
+                                    <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                                        <FileText className="h-6 w-6" />
+                                    </div>
+                                    Revisão do Prontuário
                                 </CardTitle>
-                                <CardDescription>Confirme os dados extraídos antes de salvar.</CardDescription>
+                                <CardDescription className="text-base ml-12">
+                                    Confirme os dados extraídos pela IA antes de salvar no histórico.
+                                </CardDescription>
                             </CardHeader>
-                            <CardContent>
-                                <form action={handleSaveRecord} className="space-y-4">
+                            <CardContent className="p-8 space-y-8">
+                                <form action={handleSaveRecord} className="space-y-8">
                                     <input type="hidden" name="petId" value={selectedPet?.id || ''} />
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="anamnesis">Anamnese / Queixa</Label>
+
+                                    <div className="grid gap-2 p-4 bg-muted/30 rounded-xl border border-border/50 focus-within:ring-2 ring-primary/20 transition-all">
+                                        <Label htmlFor="anamnesis" className="text-base font-semibold text-primary">Anamnese / Queixa Principal</Label>
                                         <Textarea
                                             id="anamnesis"
                                             name="anamnesis"
                                             defaultValue={aiData.anamnesis}
-                                            className="min-h-[200px]"
+                                            className="min-h-[120px] border-0 bg-transparent text-lg leading-relaxed focus-visible:ring-0 resize-none p-0 shadow-none placeholder:text-muted-foreground/30 break-words whitespace-pre-wrap"
+                                            placeholder="Descreva o histórico do paciente..."
                                         />
                                     </div>
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="physicalExam">Exame Físico</Label>
+
+                                    <div className="grid gap-2 p-4 bg-muted/30 rounded-xl border border-border/50 focus-within:ring-2 ring-primary/20 transition-all">
+                                        <Label htmlFor="physicalExam" className="text-base font-semibold text-primary">Exame Físico</Label>
                                         <Textarea
                                             id="physicalExam"
                                             name="physicalExam"
                                             defaultValue={aiData.physicalExam}
-                                            className="min-h-[150px]"
+                                            className="min-h-[120px] border-0 bg-transparent text-lg leading-relaxed focus-visible:ring-0 resize-none p-0 shadow-none placeholder:text-muted-foreground/30 break-words whitespace-pre-wrap"
+                                            placeholder="Descreva os achados físicos..."
                                         />
                                     </div>
 
-                                    {/* Vital Signs Review */}
-                                    <div className="bg-white/50 p-4 rounded-lg border border-green-100 space-y-3">
-                                        <Label className="text-green-800 font-semibold">Sinais Vitais (Extraídos)</Label>
+                                    {/* Vital Signs Review - Mini Cards */}
+                                    <div className="space-y-3">
+                                        <Label className="text-base font-semibold text-primary/80 flex items-center gap-2">
+                                            <BrainCircuit className="h-4 w-4" />
+                                            Sinais Vitais (Extraídos)
+                                        </Label>
                                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                                            <div>
-                                                <Label htmlFor="vital_temp" className="text-xs text-muted-foreground">Temp (°C)</Label>
-                                                <Input
-                                                    id="vital_temp"
-                                                    name="vital_temp"
-                                                    defaultValue={aiData.vitalSigns?.temperature}
-                                                    placeholder="38.5"
-                                                    step="0.1"
-                                                    type="number"
-                                                />
+                                            {/* Temperatura */}
+                                            <div className="bg-white p-3 rounded-xl border shadow-sm flex flex-col items-center justify-center gap-1 hover:border-primary/30 transition-colors">
+                                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Temp</span>
+                                                <div className="flex flex-col items-center justify-center w-full">
+                                                    <Input
+                                                        id="vital_temp"
+                                                        name="vital_temp"
+                                                        defaultValue={aiData.vitalSigns?.temperature}
+                                                        className="w-full text-center border-none p-0 h-auto text-3xl font-bold bg-transparent focus-visible:ring-0 text-foreground"
+                                                        placeholder="-"
+                                                        step="0.1"
+                                                        type="number"
+                                                    />
+                                                    <span className="text-xs font-medium text-muted-foreground mt-[-4px]">°C</span>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <Label htmlFor="vital_weight" className="text-xs text-muted-foreground">Peso (kg)</Label>
-                                                <Input
-                                                    id="vital_weight"
-                                                    name="vital_weight"
-                                                    defaultValue={aiData.vitalSigns?.weight}
-                                                    placeholder="10.5"
-                                                    step="0.01"
-                                                    type="number"
-                                                />
+
+                                            {/* Peso */}
+                                            <div className="bg-white p-3 rounded-xl border shadow-sm flex flex-col items-center justify-center gap-1 hover:border-primary/30 transition-colors">
+                                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Peso</span>
+                                                <div className="flex flex-col items-center justify-center w-full">
+                                                    <Input
+                                                        id="vital_weight"
+                                                        name="vital_weight"
+                                                        defaultValue={aiData.vitalSigns?.weight}
+                                                        className="w-full text-center border-none p-0 h-auto text-3xl font-bold bg-transparent focus-visible:ring-0 text-foreground"
+                                                        placeholder="-"
+                                                        step="0.01"
+                                                        type="number"
+                                                    />
+                                                    <span className="text-xs font-medium text-muted-foreground mt-[-4px]">kg</span>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <Label htmlFor="vital_hr" className="text-xs text-muted-foreground">FC (bpm)</Label>
-                                                <Input
-                                                    id="vital_hr"
-                                                    name="vital_hr"
-                                                    defaultValue={aiData.vitalSigns?.heartRate}
-                                                    placeholder="100"
-                                                    type="number"
-                                                />
+
+                                            {/* Freq Cardíaca */}
+                                            <div className="bg-white p-3 rounded-xl border shadow-sm flex flex-col items-center justify-center gap-1 hover:border-primary/30 transition-colors">
+                                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">F. Card.</span>
+                                                <div className="flex flex-col items-center justify-center w-full">
+                                                    <Input
+                                                        id="vital_hr"
+                                                        name="vital_hr"
+                                                        defaultValue={aiData.vitalSigns?.heartRate}
+                                                        className="w-full text-center border-none p-0 h-auto text-3xl font-bold bg-transparent focus-visible:ring-0 text-foreground"
+                                                        placeholder="-"
+                                                        type="number"
+                                                    />
+                                                    <span className="text-xs font-medium text-muted-foreground mt-[-4px]">bpm</span>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <Label htmlFor="vital_rr" className="text-xs text-muted-foreground">FR (rpm)</Label>
-                                                <Input
-                                                    id="vital_rr"
-                                                    name="vital_rr"
-                                                    defaultValue={aiData.vitalSigns?.respiratoryRate}
-                                                    placeholder="20"
-                                                    type="number"
-                                                />
+
+                                            {/* Freq Respiratória */}
+                                            <div className="bg-white p-3 rounded-xl border shadow-sm flex flex-col items-center justify-center gap-1 hover:border-primary/30 transition-colors">
+                                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">F. Resp.</span>
+                                                <div className="flex flex-col items-center justify-center w-full">
+                                                    <Input
+                                                        id="vital_rr"
+                                                        name="vital_rr"
+                                                        defaultValue={aiData.vitalSigns?.respiratoryRate}
+                                                        className="w-full text-center border-none p-0 h-auto text-3xl font-bold bg-transparent focus-visible:ring-0 text-foreground"
+                                                        placeholder="-"
+                                                        type="number"
+                                                    />
+                                                    <span className="text-xs font-medium text-muted-foreground mt-[-4px]">rpm</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="diagnosis">Suspeita Diagnóstica</Label>
-                                        <Input
+
+                                    <div className="grid gap-2 border-l-4 border-primary pl-4 py-3 bg-primary/5 rounded-r-lg">
+                                        <Label htmlFor="diagnosis" className="text-primary font-bold uppercase tracking-wide text-xs">Suspeita Diagnóstica</Label>
+                                        <Textarea
                                             id="diagnosis"
                                             name="diagnosis"
                                             defaultValue={aiData.diagnosis}
-                                            className="font-semibold text-lg"
+                                            className="font-heading text-xl font-bold border-none bg-transparent shadow-none p-0 min-h-[60px] focus-visible:ring-0 text-foreground resize-none leading-tight"
                                         />
                                     </div>
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="prescription">Prescrição / Tratamento</Label>
+
+                                    <div className="grid gap-2 p-4 bg-amber-50 rounded-xl border border-amber-100">
+                                        <Label htmlFor="prescription" className="text-amber-800 font-medium flex items-center gap-2">
+                                            <Sparkles className="h-4 w-4 text-amber-600" />
+                                            Prescrição Sugerida
+                                        </Label>
                                         <Textarea
                                             id="prescription"
                                             name="prescription"
                                             defaultValue={aiData.prescription}
-                                            className="min-h-[200px] font-mono text-sm"
+                                            className="min-h-[150px] text-base bg-white/50 border-amber-200/50 focus-visible:ring-amber-500/20 text-gray-800 leading-relaxed rounded-lg p-3"
                                         />
                                     </div>
 
-                                    <SubmitButton className="w-full h-12 text-lg bg-green-600 hover:bg-green-700 text-white shadow-md">
-                                        Salvar no Prontuário
+                                    <SubmitButton className="w-full h-14 text-lg bg-gradient-brand text-white shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all rounded-xl font-bold tracking-wide">
+                                        <FileText className="mr-2 h-5 w-5" />
+                                        Salvar Prontuário
                                     </SubmitButton>
                                 </form>
                             </CardContent>
                         </Card>
                     ) : (
-                        <div className="h-full flex items-center justify-center border-l border-dashed pl-8 text-muted-foreground italic">
-                            O prontuário gerado aparecerá aqui para sua revisão.
+                        <div className="h-full min-h-[400px] flex flex-col items-center justify-center border-2 border-dashed border-muted-foreground/20 rounded-3xl bg-muted/5 p-8 text-center gap-4 animate-in fade-in duration-700">
+                            <div className="p-4 bg-muted rounded-full">
+                                <FileText className="h-8 w-8 text-muted-foreground/50" />
+                            </div>
+                            <div className="max-w-xs">
+                                <h3 className="font-normal text-2xl text-foreground">Aguardando Consulta</h3>
+                                <p className="text-muted-foreground">Inicie a gravação para que a IA possa gerar o prontuário automaticamente aqui.</p>
+                            </div>
                         </div>
                     )}
                 </div>

@@ -33,7 +33,7 @@ export async function sendMessage(formData: FormData) {
             sessionId,
             senderId,
             content,
-            content
+
             // type: "TEXT" - Removed to bypass stale client error (DB has default)
         }
     });

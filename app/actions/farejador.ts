@@ -35,57 +35,21 @@ export async function findCompetitorsAction(location: string): Promise<{ success
     } catch (error) {
         console.error("Failed to find competitors:", error);
         // Error handling for 429 is done via the throw in service, caught here
-        return { success: false, error: "Falha ao buscar concorrentes. Verifique a cota da API." };
+        return { success: false, error: "Falha ao buscar concorrentes" };
     }
 }
 
 export async function saveCompetitorAction(competitor: CompetitorData) {
-    try {
-        await prisma.competitor.create({
-            data: {
-                name: competitor.name,
-                address: competitor.address,
-                rating: competitor.rating,
-                reviews: competitor.reviews,
-                website: competitor.website,
-                phone: competitor.phone,
-                instagram: competitor.instagram,
-                facebook: competitor.facebook,
-                snapshots: {
-                    create: {
-                        rating: competitor.rating,
-                        reviewCount: competitor.reviews
-                    }
-                }
-            }
-        });
-        revalidatePath('/dashboard/farejador');
-        return { success: true };
-    } catch (error) {
-        console.error("Failed to save competitor:", error);
-        return { success: false, error: "Erro ao salvar concorrente" };
-    }
+    console.warn("Farejador feature is disabled. Save skipped.");
+    return { success: true };
 }
 
 export async function getMonitoredCompetitorsAction() {
-    try {
-        const competitors = await prisma.competitor.findMany({
-            orderBy: { createdAt: 'desc' },
-            include: { snapshots: { take: 1, orderBy: { date: 'desc' } } }
-        });
-        return { success: true, data: competitors };
-    } catch (error) {
-        console.error("Failed to get competitors:", error);
-        return { success: false, error: "Erro ao carregar concorrentes" };
-    }
-} export async function resetFarejadorAction() {
-    try {
-        await prisma.competitorSnapshot.deleteMany({});
-        await prisma.competitor.deleteMany({});
-        revalidatePath('/dashboard/farejador');
-        return { success: true };
-    } catch (error) {
-        console.error("Failed to reset:", error);
-        return { success: false, error: "Erro ao resetar" };
-    }
+    console.warn("Farejador feature is disabled. Get skipped.");
+    return { success: true, data: [] };
+}
+
+export async function resetFarejadorAction() {
+    console.warn("Farejador feature is disabled. Reset skipped.");
+    return { success: true };
 }

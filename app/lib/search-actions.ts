@@ -17,7 +17,7 @@ export async function searchTutors(query: string) {
             take: 5,
         });
 
-        return tutors.map(t => ({
+        return tutors.map((t: any) => ({
             id: t.id,
             name: t.user.name,
             cpf: t.cpf,
@@ -45,7 +45,7 @@ export async function searchPets(query: string) {
             take: 5,
         });
 
-        return pets.map(p => ({
+        return pets.map((p: any) => ({
             id: p.id,
             name: p.name,
             tutorName: p.tutor.user.name,

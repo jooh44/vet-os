@@ -36,7 +36,7 @@ export default async function PetTable({
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {pets?.map((pet) => (
+                    {pets?.map((pet: any) => (
                         <PetTableRow key={pet.id} pet={pet} />
                     ))}
                     {pets?.length === 0 && (

@@ -63,7 +63,7 @@ export async function updatePet(formData: FormData) {
 
 export async function deletePet(id: string) {
     try {
-        await prisma.$transaction(async (tx) => {
+        await prisma.$transaction(async (tx: any) => {
             // 1. Delete Medical Records
             await tx.medicalRecord.deleteMany({
                 where: { petId: id }

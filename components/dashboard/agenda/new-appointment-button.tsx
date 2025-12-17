@@ -71,7 +71,7 @@ export function NewAppointmentButton() {
 
         const fetchPets = async () => {
             const results = await searchPets(debouncedQuery);
-            setPets(results.map(p => ({ ...p, tutorName: p.tutorName || '' })));
+            setPets(results.map((p: any) => ({ ...p, tutorName: p.tutorName || '' })));
         };
 
         fetchPets();
@@ -92,7 +92,7 @@ export function NewAppointmentButton() {
         }
         const fetchTutors = async () => {
             const results = await searchTutors(debouncedTutorQuery);
-            setTutors(results.map(t => ({ ...t, name: t.name || 'Sem nome' })));
+            setTutors(results.map((t: any) => ({ ...t, name: t.name || 'Sem nome' })));
         };
         fetchTutors();
     }, [debouncedTutorQuery]);
@@ -164,7 +164,6 @@ export function NewAppointmentButton() {
             return;
         }
         setLoading(true);
-        console.log("[CLIENT] Submitting appointment...", { title, dateTime, selectedPet });
 
         try {
             const start = new Date(dateTime);
@@ -173,14 +172,14 @@ export function NewAppointmentButton() {
             const result = await createAppointment({
                 title,
                 startTime: start,
-                endTime: end, // Default 1 hour
+                endTime: end,
                 type: 'CONSULT',
                 petId: selectedPet?.id
             });
 
             if (result.error) {
                 console.error(result.error);
-                alert('Erro ao criar agendamento');
+                alert(result.error);
             } else {
                 setOpen(false);
                 // Reset main form
@@ -191,6 +190,7 @@ export function NewAppointmentButton() {
             }
         } catch (err) {
             console.error(err);
+            alert("Erro inesperado ao criar agendamento.");
         } finally {
             setLoading(false);
         }

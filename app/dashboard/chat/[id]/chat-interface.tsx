@@ -132,7 +132,7 @@ export function ChatInterface({ sessionId, initialMessages, currentUserId, recip
                 >
                     <input type="hidden" name="sessionId" value={sessionId} />
 
-                    <Button type="button" variant="ghost" size="icon" className="text-muted-foreground hover:text-primary rounded-full">
+                    <Button type="button" variant="ghost" size="icon" className="text-primary hover:text-primary hover:bg-primary/10 rounded-full">
                         <ImageIcon className="h-5 w-5" />
                     </Button>
 
@@ -150,8 +150,8 @@ export function ChatInterface({ sessionId, initialMessages, currentUserId, recip
                             <Send className="h-5 w-5 text-white" />
                         </Button>
                     ) : (
-                        <Button type="button" variant="ghost" size="icon" className="rounded-full h-12 w-12">
-                            <Mic className="h-5 w-5 text-muted-foreground" />
+                        <Button type="button" variant="ghost" size="icon" className="rounded-full h-12 w-12 hover:bg-primary/10">
+                            <Mic className="h-5 w-5 text-primary" />
                         </Button>
                     )}
                 </form>

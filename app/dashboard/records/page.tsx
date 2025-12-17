@@ -49,7 +49,7 @@ export default async function RecordsListPage({
         <div className="flex flex-col gap-6 p-6">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-primary flex items-center gap-2">
+                    <h1 className="text-4xl font-normal text-primary flex items-center gap-2">
                         <FileText className="h-8 w-8" />
                         Prontuários Médicos
                     </h1>
@@ -92,7 +92,7 @@ export default async function RecordsListPage({
                                         Nenhum prontuário encontrado.
                                     </TableCell>
                                 </TableRow>
-                            ) : records.map((record) => (
+                            ) : records.map((record: any) => (
                                 <RecordTableRow key={record.id} record={record} />
                             ))}
                         </TableBody>

@@ -10,8 +10,9 @@ const config: Config = {
 	theme: {
 		extend: {
 			fontFamily: {
-				sans: ["var(--font-inter)", "sans-serif"],
-				serif: ["var(--font-lora)", "serif"],
+				sans: ["var(--font-poppins)", "sans-serif"],
+				heading: ["var(--font-space-grotesk)", "sans-serif"],
+				serif: ["var(--font-serif)", "serif"], // Added Merriweather mapping
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

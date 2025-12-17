@@ -1,21 +1,36 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, Stethoscope, ArrowRight, PlayCircle, Clock } from "lucide-react"
-import { ConsultationQueue } from "@/components/dashboard/consultation-queue"
+
+import { AIAssistantCard } from "@/components/dashboard/ai-assistant-card"
+import { TelemedCard } from "@/components/dashboard/telemed-card"
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
+import { auth } from "@/auth"
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+    const session = await auth()
+    const userName = session?.user?.name || "Doutor"
+    const formattedName = userName.startsWith("Dr.") || userName.startsWith("Dra.")
+        ? userName
+        : `Dr. ${userName}`
+
     return (
         <div className="flex flex-col gap-8 pb-10">
             {/* Header Section */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-800">Seu Centro de Ação</h1>
-                    <p className="text-muted-foreground">Bem-vindo, Dr. Johny. Vamos cuidar de quem precisa hoje?</p>
+                    <h1 className="text-4xl md:text-5xl font-serif font-normal text-gray-800">
+                        Bem-vindo, {formattedName}
+                    </h1>
                 </div>
                 <div className="flex gap-2">
+                    <Link href="/dashboard/settings">
+                        <Button variant="outline" className="border-primary/20 text-primary hover:bg-primary/10 hover:text-primary">
+                            Configurações
+                        </Button>
+                    </Link>
                     <Link href="/dashboard/consultation">
-                        <Button className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 transition-all hover:scale-105">
+                        <Button className="bg-primary hover:bg-primary/90 text-white">
                             <PlayCircle className="mr-2 h-5 w-5" />
                             Iniciar Nova Consulta
                         </Button>
@@ -26,65 +41,66 @@ export default function DashboardPage() {
             {/* Quick Stats / Actionable Metrics */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <Link href="/dashboard/patients">
-                    <Card className="shadow-sm hover:shadow-md transition-all cursor-pointer bg-card group">
+                    <Card className="shadow-sm hover:shadow-md transition-all cursor-pointer bg-card group border-primary/10 hover:border-primary/30">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium font-serif text-muted-foreground group-hover:text-primary transition-colors">Pacientes Ativos</CardTitle>
-                            <Users className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                            <CardTitle className="text-xl font-normal font-serif text-muted-foreground group-hover:text-primary transition-colors">Pacientes Ativos</CardTitle>
+                            <Users className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold flex items-center gap-2">
+                            <div className="text-3xl font-normal font-serif flex items-center gap-2">
                                 12
-                                <span className="text-xs font-normal text-muted-foreground">esta semana</span>
+                                <span className="text-sm font-sans text-muted-foreground">esta semana</span>
                             </div>
                         </CardContent>
                     </Card>
                 </Link>
 
-                <Card className="shadow-sm hover:shadow-md transition-shadow bg-card">
+                <Card className="shadow-sm hover:shadow-md transition-shadow bg-card border-primary/10">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium font-serif text-muted-foreground">Consultas Realizadas</CardTitle>
-                        <Stethoscope className="h-4 w-4 text-green-600" />
+                        <CardTitle className="text-xl font-normal font-serif text-muted-foreground">Consultas Realizadas</CardTitle>
+                        <Stethoscope className="h-5 w-5 text-green-600" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold flex items-center gap-2">
+                        <div className="text-3xl font-normal font-serif flex items-center gap-2">
                             8
-                            <span className="text-xs font-normal text-green-600 bg-green-50 px-1.5 py-0.5 rounded-full flex items-center">
+                            <span className="text-xs font-sans font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full flex items-center">
                                 Hoje
                             </span>
                         </div>
                     </CardContent>
                 </Card>
 
-                <Card className="shadow-sm hover:shadow-md transition-shadow bg-card opacity-50">
+                <Card className="shadow-sm hover:shadow-md transition-shadow bg-card opacity-80 border-primary/10">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium font-serif text-muted-foreground">Tempo Médio</CardTitle>
-                        <Clock className="h-4 w-4 text-orange-400" />
+                        <CardTitle className="text-xl font-normal font-serif text-muted-foreground">Tempo Médio</CardTitle>
+                        <Clock className="h-5 w-5 text-primary" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">22 min</div>
-                        <p className="text-xs text-muted-foreground mt-1">por atendimento</p>
+                        <div className="text-3xl font-normal font-serif">22 min</div>
+                        <p className="text-xs text-muted-foreground mt-1 font-sans">por atendimento</p>
                     </CardContent>
                 </Card>
             </div>
 
             {/* Main Content Areas */}
             <div className="grid gap-8 lg:grid-cols-3">
-                {/* Visual Queue / Recent - Takes 3/3 basically, or 2/3 with something else */}
-                <div className="lg:col-span-3">
-                    <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl border p-4">
-                        <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-xl font-semibold flex items-center gap-2">
-                                <Clock className="h-5 w-5 text-primary" />
-                                Pacientes Recentes
-                            </h2>
-                            <Button variant="ghost" size="sm" asChild>
-                                <Link href="/dashboard/patients">Ver todos <ArrowRight className="ml-1 h-3 w-3" /></Link>
-                            </Button>
-                        </div>
-                        <ConsultationQueue />
+                {/* New Feature Cards - Taking prominent space */}
+                <div className="lg:col-span-2">
+                    <div className="grid gap-4 md:grid-cols-2 h-full">
+                        <AIAssistantCard />
+                        <TelemedCard />
                     </div>
                 </div>
+
+                {/* Side Panel / Notifications or Quick Stats could go here later */}
+                <div className="lg:col-span-1">
+                    <Card className="h-full border-dashed border-2 flex flex-col items-center justify-center p-6 text-center text-muted-foreground bg-gray-50/50">
+                        <Clock className="w-10 h-10 mb-2 opacity-20" />
+                        <p>Insights Recentes</p>
+                        <p className="text-sm opacity-60">Nenhum alerta crítico detectado nas últimas 24h.</p>
+                    </Card>
+                </div>
             </div>
-        </div>
+        </div >
     )
 }

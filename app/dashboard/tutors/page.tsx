@@ -23,7 +23,7 @@ export default async function TutorsPage({
     return (
         <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
-                <h1 className="text-lg font-semibold md:text-2xl text-primary">Tutores</h1>
+                <h1 className="text-4xl font-normal text-primary">Tutores</h1>
                 <Link href="/dashboard/tutors/new">
                     <Button size="sm" className="h-8 gap-1">
                         <PlusCircle className="h-3.5 w-3.5" />

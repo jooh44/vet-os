@@ -13,7 +13,7 @@ export async function quickRegisterTutorAndPet(data: {
     species: Species;
 }) {
     try {
-        const result = await prisma.$transaction(async (tx) => {
+        const result = await prisma.$transaction(async (tx: any) => {
             let tutorId = data.existingTutorId;
 
             // If no existing tutor, create new

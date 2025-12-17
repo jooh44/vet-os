@@ -20,6 +20,7 @@ import { signOut } from 'next-auth/react';
 
 const vetLinks = [
     { name: 'Início', href: '/dashboard', icon: Home },
+    { name: 'Agenda', href: '/dashboard/agenda', icon: Calendar },
     { name: 'Pacientes', href: '/dashboard/patients', icon: Dog },
     { name: 'Tutores', href: '/dashboard/tutors', icon: Users },
     { name: 'Prontuários', href: '/dashboard/records', icon: FileText },
@@ -43,7 +44,7 @@ export default function Sidebar({ userRole }: { userRole?: string }) {
                 <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
                     <ShieldCheck className="h-5 w-5 text-primary" />
                 </div>
-                <h1 className="text-2xl font-bold text-primary">Vet.OS</h1>
+                <h1 className="text-3xl font-normal text-primary">Vet.OS</h1>
             </div>
             <div className="flex-1 overflow-y-auto py-4">
                 <nav className="grid gap-1 px-4">
@@ -54,10 +55,10 @@ export default function Sidebar({ userRole }: { userRole?: string }) {
                                 key={link.name}
                                 href={link.href}
                                 className={cn(
-                                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all hover:text-primary",
+                                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all",
                                     (link.href === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(link.href))
-                                        ? "bg-accent text-accent-foreground shadow-sm"
-                                        : "text-muted-foreground hover:bg-muted"
+                                        ? "bg-primary text-white shadow-md shadow-primary/20"
+                                        : "text-muted-foreground hover:bg-muted hover:text-primary"
                                 )}
                             >
                                 <LinkIcon className="h-4 w-4" />

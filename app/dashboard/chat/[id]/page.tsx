@@ -52,7 +52,7 @@ export default async function ChatPage({ params }: { params: { id: string } }) {
     const recipientName = isTutor ? (chatSession.vet.name || 'Veterinário') : (chatSession.tutor.user.name || 'Tutor');
 
     // Transform messages...
-    const formattedMessages = chatSession.messages.map(msg => ({
+    const formattedMessages = chatSession.messages.map((msg: any) => ({
         id: msg.id,
         content: msg.content,
         senderId: msg.senderId,

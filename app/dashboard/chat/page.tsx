@@ -49,7 +49,7 @@ export default async function ChatRootPage() {
         <>
             {/* Mobile View: Show List */}
             <div className="md:hidden h-full">
-                <ChatSidebar chats={chats} className="border-none w-full" />
+                <ChatSidebar chats={chats} className="border-none w-full" currentUserId={user?.id || ''} />
             </div>
 
             {/* Desktop View: Show Placeholder (Sidebar is in Layout) */}

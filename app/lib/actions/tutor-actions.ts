@@ -49,7 +49,7 @@ export async function updateTutor(formData: FormData) {
 
 export async function deleteTutor(id: string) {
     try {
-        await prisma.$transaction(async (tx) => {
+        await prisma.$transaction(async (tx: any) => {
             // 1. Get Tutor with User ID for final cleanup
             const tutor = await tx.tutor.findUnique({
                 where: { id },
@@ -64,7 +64,7 @@ export async function deleteTutor(id: string) {
                 where: { tutorId: id },
                 select: { id: true }
             });
-            const sessionIds = sessions.map(s => s.id);
+            const sessionIds = sessions.map((s: any) => s.id);
 
             if (sessionIds.length > 0) {
                 await tx.chatMessage.deleteMany({
@@ -80,7 +80,7 @@ export async function deleteTutor(id: string) {
                 where: { tutorId: id },
                 select: { id: true }
             });
-            const petIds = pets.map(p => p.id);
+            const petIds = pets.map((p: any) => p.id);
 
             if (petIds.length > 0) {
                 // Vaccines
@@ -93,7 +93,7 @@ export async function deleteTutor(id: string) {
                     where: { petId: { in: petIds } },
                     select: { id: true }
                 });
-                const consultIds = consultations.map(c => c.id);
+                const consultIds = consultations.map((c: any) => c.id);
 
                 if (consultIds.length > 0) {
                     await tx.document.deleteMany({

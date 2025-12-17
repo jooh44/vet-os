@@ -1,4 +1,5 @@
 'use client';
+import Link from "next/link"
 
 import {
     DropdownMenu,
@@ -24,8 +25,12 @@ export function UserNav() {
             <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Perfil</DropdownMenuItem>
-                <DropdownMenuItem>Configurações</DropdownMenuItem>
+                <Link href="/dashboard/settings" className="w-full cursor-pointer">
+                    <DropdownMenuItem>Perfil</DropdownMenuItem>
+                </Link>
+                <Link href="/dashboard/settings" className="w-full cursor-pointer">
+                    <DropdownMenuItem>Configurações</DropdownMenuItem>
+                </Link>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="text-red-600 focus:text-red-600 cursor-pointer" onSelect={async (e) => {
                     e.preventDefault(); // Prevent closing immediately if needed? No, just run action.

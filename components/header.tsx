@@ -9,7 +9,7 @@ export default async function Header() {
     return (
         <header className="flex h-14 items-center gap-4 border-b bg-card px-6 lg:h-[60px]">
             <div className="w-full flex-1">
-                <h2 className="text-lg font-semibold md:text-xl text-primary">
+                <h2 className="text-3xl font-normal text-primary">
                     Visão Geral
                 </h2>
             </div>

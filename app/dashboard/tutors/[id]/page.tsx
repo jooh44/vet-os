@@ -30,7 +30,7 @@ export default async function TutorDetailsPage({ params }: { params: { id: strin
         <div className="flex flex-col gap-6">
             <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-primary">{tutor.user.name}</h1>
+                    <h1 className="text-4xl font-normal text-primary">{tutor.user.name}</h1>
                     <p className="text-muted-foreground">{tutor.user.email} • {tutor.phone}</p>
                 </div>
                 <div className="flex gap-2">
@@ -85,7 +85,7 @@ export default async function TutorDetailsPage({ params }: { params: { id: strin
                 <div className="md:col-span-2 lg:col-span-3">
                     <h2 className="text-xl font-semibold mb-4">Pets ({tutor.pets.length})</h2>
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        {tutor.pets.map((pet) => (
+                        {tutor.pets.map((pet: any) => (
                             <Link key={pet.id} href={`/dashboard/pets/${pet.id}`}>
                                 <Card className="hover:bg-muted/50 transition-colors cursor-pointer h-full">
                                     <CardHeader className="flex flex-row items-center gap-4 pb-2">

@@ -4,76 +4,86 @@
 
 @layer base {
   :root {
-    /* FRED Design System - Warm Sage Theme */
-    --background: 80 20% 98%; /* #FAFBF8 */
-    --foreground: 154 10% 10%; /* Dark Green/Gray for text */
-    
+    /* DigitalDog Design System */
+
+    /* Light Mode - White/Clean */
+    --background: 0 0% 100%;
+    /* White */
+    --foreground: 222 47% 11%;
+    /* Dark Navy Text */
+
     --card: 0 0% 100%;
-    --card-foreground: 154 10% 10%;
-    
+    --card-foreground: 222 47% 11%;
+
     --popover: 0 0% 100%;
-    --popover-foreground: 154 10% 10%;
-    
-    --primary: 154 14% 49%; /* #6B8E7F Warm Sage */
+    --popover-foreground: 222 47% 11%;
+
+    /* Primary: Warm Sage (Tea Green) */
+    --primary: 154 14% 49%;
+    /* #6B8E7F */
     --primary-foreground: 0 0% 100%;
-    
-    --secondary: 30 50% 64%; /* #D4A574 Warm Amber */
+
+    /* Secondary: Warm Amber */
+    --secondary: 30 50% 64%;
+    /* #D4A574 */
     --secondary-foreground: 0 0% 100%;
-    
+
     --muted: 80 10% 94%;
     --muted-foreground: 154 5% 40%;
-    
+
+    /* Accent: Soft Beige/Sage */
     --accent: 30 30% 96%;
     --accent-foreground: 30 50% 40%;
-    
+
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    
+    --destructive-foreground: 210 40% 98%;
+
     --border: 154 10% 90%;
     --input: 154 10% 90%;
     --ring: 154 14% 49%;
-    
-    --radius: 0.75rem; /* Rounded corners */
-    
+
+    --radius: 0.75rem;
+
     --chart-1: 154 14% 49%;
     --chart-2: 30 50% 64%;
-    --chart-3: 197 37% 24%;
+    --chart-3: 80 10% 94%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
   }
 
   .dark {
-    --background: 154 10% 5%; /* Deep Green/Black */
+    /* Dark Mode - Deep Sage Background */
+    --background: 154 10% 10%;
     --foreground: 80 20% 98%;
-    
-    --card: 154 10% 8%;
+
+    --card: 154 10% 12%;
     --card-foreground: 80 20% 98%;
-    
-    --popover: 154 10% 8%;
+
+    --popover: 154 10% 12%;
     --popover-foreground: 80 20% 98%;
-    
+
     --primary: 154 14% 49%;
     --primary-foreground: 0 0% 100%;
-    
+
     --secondary: 30 50% 64%;
     --secondary-foreground: 0 0% 100%;
-    
+
     --muted: 154 10% 15%;
     --muted-foreground: 154 5% 60%;
-    
+
     --accent: 154 10% 15%;
     --accent-foreground: 80 20% 98%;
-    
+
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    
+
     --border: 154 10% 15%;
     --input: 154 10% 15%;
     --ring: 154 14% 49%;
-    
+
     --chart-1: 154 14% 49%;
     --chart-2: 30 50% 64%;
-    --chart-3: 30 80% 55%;
+    --chart-3: 187 100% 41%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
@@ -83,10 +93,27 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-serif;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-serif font-normal;
+  }
+}
+
+@layer utilities {
+  .bg-gradient-brand {
+    @apply bg-gradient-to-r from-primary to-secondary;
+  }
+
+  .text-gradient-brand {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
   }
 }

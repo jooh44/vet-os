@@ -56,7 +56,7 @@ export async function createTutor(prevState: any, formData: FormData) {
     const hashedPassword = await bcrypt.hash('123456', 10); // Default password
 
     try {
-        await prisma.$transaction(async (tx) => {
+        await prisma.$transaction(async (tx: any) => {
             const user = await tx.user.create({
                 data: {
                     name,
@@ -152,10 +152,10 @@ export async function createMedicalRecord(formData: FormData) {
 
         // Extract Vitals
         const vitalSigns = {
-            temperature: formData.get('vital_temp'),
-            weight: formData.get('vital_weight'),
-            heartRate: formData.get('vital_hr'),
-            respiratoryRate: formData.get('vital_rr'),
+            temperature: formData.get('vital_temp') ? String(formData.get('vital_temp')) : null,
+            weight: formData.get('vital_weight') ? String(formData.get('vital_weight')) : null,
+            heartRate: formData.get('vital_hr') ? String(formData.get('vital_hr')) : null,
+            respiratoryRate: formData.get('vital_rr') ? String(formData.get('vital_rr')) : null,
         };
 
         if (!petId) {
@@ -181,7 +181,9 @@ export async function createMedicalRecord(formData: FormData) {
 
         const record = await prisma.consultation.create({
             data: {
+                date: new Date(),
                 title: `Consulta Inteligente - ${new Date().toLocaleDateString('pt-BR')}`,
+                status: 'IN_PROGRESS',
                 anamnesis,
                 physicalExam,
                 diagnosis,

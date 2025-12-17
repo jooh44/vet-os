@@ -50,7 +50,7 @@ export function AsyncPatientSelect({ onSelect, error }: { onSelect: (id: string,
                         variant="outline"
                         role="combobox"
                         aria-expanded={open}
-                        className="w-full justify-between"
+                        className="w-full justify-between border-primary/20 text-primary hover:bg-primary/5 hover:text-primary"
                     >
                         {value
                             ? pets.find((p) => p.id === value)?.label || "Paciente Selecionado"

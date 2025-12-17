@@ -102,7 +102,7 @@ export async function getInviteLink(tutorId: string) {
             }
 
             // Generate simple code
-            const code = `${tutor.user.name.split(' ')[0].toLowerCase()}${Math.floor(Math.random() * 1000)}`;
+            const code = `${(tutor.user.name || 'tutor').split(' ')[0].toLowerCase()}${Math.floor(Math.random() * 1000)}`;
 
             sessionData = await prisma.chatSession.create({
                 data: {

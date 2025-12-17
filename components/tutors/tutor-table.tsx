@@ -35,7 +35,7 @@ export default async function TutorTable({
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {tutors?.map((tutor) => (
+                    {tutors?.map((tutor: any) => (
                         <TutorTableRow key={tutor.id} tutor={tutor} />
                     ))}
                     {tutors?.length === 0 && (

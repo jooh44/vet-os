@@ -88,78 +88,70 @@ export function AudioRecorder({ onAudioReady }: AudioRecorderProps) {
     };
 
     return (
-        <Card className="w-full border-2 border-dashed border-muted-foreground/25 bg-muted/50 transition-colors hover:bg-muted/70">
-            <CardContent className="flex flex-col items-center justify-center p-10 gap-6">
-                <input
-                    type="file"
-                    ref={fileInputRef}
-                    className="hidden"
-                    accept="audio/*"
-                    onChange={handleFileChange}
-                />
+        <div className="flex flex-col items-center justify-center py-12 gap-8 animate-in fade-in zoom-in duration-500">
+            <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                accept="audio/*"
+                onChange={handleFileChange}
+            />
 
+            <div className="relative group">
+                {/* Pulse Effects */}
+                {isRecording && (
+                    <>
+                        <div className="absolute inset-0 bg-primary/20 rounded-full animate-ping" />
+                        <div className="absolute inset-0 bg-primary/10 rounded-full animate-pulse blur-xl scale-125" />
+                    </>
+                )}
+
+                {/* Main Button */}
+                <button
+                    onClick={isRecording ? stopRecording : startRecording}
+                    className={cn(
+                        "relative z-10 flex items-center justify-center w-40 h-40 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 border-8",
+                        isRecording
+                            ? "bg-white border-red-500 hover:border-red-600"
+                            : "bg-gradient-to-br from-primary to-primary/80 border-white hover:shadow-primary/50"
+                    )}
+                >
+                    {isRecording ? (
+                        <div className="flex flex-col items-center gap-1">
+                            <Square className="h-12 w-12 text-red-500 fill-current" />
+                            <div className="w-4 h-4 rounded-full bg-red-500 animate-pulse" />
+                            <span className="text-xs font-bold text-red-500 uppercase tracking-widest">Parar</span>
+                        </div>
+                    ) : (
+                        <Mic className="h-16 w-16 text-white" />
+                    )}
+                </button>
+            </div>
+
+            <div className="text-center space-y-2">
                 <div className={cn(
-                    "flex items-center justify-center h-24 w-24 rounded-full transition-all duration-500",
-                    isRecording ? "bg-red-100 animate-pulse ring-4 ring-red-50" : "bg-primary/10"
+                    "text-4xl font-mono font-bold tracking-wider transition-colors",
+                    isRecording ? "text-red-500" : "text-muted-foreground/50"
                 )}>
-                    {isRecording ? (
-                        <Mic className="h-10 w-10 text-red-600" />
-                    ) : (
-                        <Mic className="h-10 w-10 text-primary" />
-                    )}
+                    {formatTime(duration)}
                 </div>
+                {!isRecording && (
+                    <p className="text-lg font-medium text-muted-foreground">
+                        Toque para iniciar a consulta
+                    </p>
+                )}
+            </div>
 
-                <div className="text-center space-y-2">
-                    {isRecording ? (
-                        <>
-                            <h3 className="text-xl font-semibold text-red-600 animate-pulse">Gravando...</h3>
-                            <p className="text-3xl font-mono text-foreground font-medium tracking-wider">
-                                {formatTime(duration)}
-                            </p>
-                            <p className="text-sm text-muted-foreground">Fale claramente sobre o paciente</p>
-                        </>
-                    ) : (
-                        <>
-                            <h3 className="text-lg font-semibold">Toque para Gravar ou Envie Arq.</h3>
-                            <p className="text-sm text-muted-foreground">Suporta MP3, WAV, ou gravações do WhatsApp</p>
-                        </>
-                    )}
-                </div>
-
-                <div className="flex flex-col gap-3 w-full max-w-xs">
-                    {!isRecording ? (
-                        <>
-                            <Button
-                                size="lg"
-                                className="w-full gap-2 rounded-full h-12 text-base shadow-lg hover:shadow-xl transition-all hover:scale-105"
-                                onClick={startRecording}
-                            >
-                                <Mic className="h-5 w-5" />
-                                Iniciar Gravação
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="lg"
-                                className="w-full gap-2 rounded-full h-12 text-base border-primary/20 hover:bg-primary/5"
-                                onClick={triggerFileUpload}
-                            >
-                                <UploadCloud className="h-5 w-5" />
-                                Carregar Áudio
-                            </Button>
-                        </>
-                    ) : (
-                        <Button
-                            size="lg"
-                            variant="destructive"
-                            className="w-full gap-2 rounded-full h-12 text-base shadow-lg hover:shadow-xl transition-all hover:scale-105"
-                            onClick={stopRecording}
-                        >
-                            <Square className="h-5 w-5 fill-current" />
-                            Parar e Processar
-                        </Button>
-                    )}
-                </div>
-            </CardContent>
-        </Card>
+            {/* Upload Option (Secondary) */}
+            {!isRecording && (
+                <button
+                    onClick={triggerFileUpload}
+                    className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-2 px-4 rounded-full hover:bg-muted"
+                >
+                    <UploadCloud className="h-4 w-4" />
+                    <span>Ou carregue um arquivo de áudio</span>
+                </button>
+            )}
+        </div>
     );
 }
