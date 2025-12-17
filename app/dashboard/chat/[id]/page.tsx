@@ -81,12 +81,14 @@ export default async function ChatPage({ params }: { params: { id: string } }) {
                 </div>
             </header>
 
-            <ChatInterface
-                sessionId={chatSession.id}
-                initialMessages={formattedMessages}
-                currentUserId={userId!}
-                recipientName={recipientName}
-            />
+            <div className="flex-1 min-h-0">
+                <ChatInterface
+                    sessionId={chatSession.id}
+                    initialMessages={formattedMessages}
+                    currentUserId={userId!}
+                    recipientName={recipientName}
+                />
+            </div>
         </div>
     );
 }
