@@ -43,3 +43,5 @@ vps_key_new.pub
 debug_vps.py
 
 
+env_prod
+coolify_key

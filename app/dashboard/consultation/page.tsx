@@ -391,7 +391,7 @@ export default function NewConsultationPage() {
                                         />
                                     </div>
 
-                                    <SubmitButton className="w-full h-14 text-lg bg-gradient-brand text-white shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all rounded-xl font-bold tracking-wide">
+                                    <SubmitButton className="w-full h-14 text-lg bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm transition-all rounded-xl font-serif font-normal tracking-wide">
                                         <FileText className="mr-2 h-5 w-5" />
                                         Salvar Prontuário
                                     </SubmitButton>

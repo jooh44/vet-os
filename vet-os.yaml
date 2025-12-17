@@ -1,0 +1,22 @@
+http:
+  routers:
+    vet-os-http:
+      entryPoints:
+        - http
+      rule: "Host(`app.digitaldog.pet`)"
+      service: vet-os
+      middlewares:
+        - redirect-to-https
+    vet-os-https:
+      entryPoints:
+        - https
+      rule: "Host(`app.digitaldog.pet`)"
+      service: vet-os
+      tls:
+        certResolver: letsencrypt
+
+  services:
+    vet-os:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.1.1:3000"
