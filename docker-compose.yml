@@ -35,12 +35,14 @@ services:
       - traefik.http.routers.vetos-http.entrypoints=http
       - traefik.http.routers.vetos-http.rule=Host(`app.digitaldog.pet`)
       - traefik.http.routers.vetos-http.middlewares=redirect-to-https
+      - traefik.http.routers.vetos-http.service=vetos
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
       # HTTPS router
       - traefik.http.routers.vetos-https.entrypoints=https
       - traefik.http.routers.vetos-https.rule=Host(`app.digitaldog.pet`)
       - traefik.http.routers.vetos-https.tls=true
       - traefik.http.routers.vetos-https.tls.certresolver=letsencrypt
+      - traefik.http.routers.vetos-https.service=vetos
       # Service port
       - traefik.http.services.vetos.loadbalancer.server.port=3000
     networks:
