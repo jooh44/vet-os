@@ -139,12 +139,13 @@ export async function createPet(tutorIdArg: string | null | undefined, prevState
     } catch (error) {
         console.error('Database/Storage Error:', error);
         return {
-            message: 'Erro ao salvar pet. Tente novamente.',
+            message: `Erro ao salvar pet: ${error instanceof Error ? error.message : String(error)}`,
         };
     }
+}
 
-    revalidatePath('/dashboard/tutors');
-    redirect('/dashboard/tutors'); // Or redirect to tutor profile
+revalidatePath('/dashboard/tutors');
+redirect('/dashboard/tutors'); // Or redirect to tutor profile
 }
 
 // MEDICAL RECORDS
