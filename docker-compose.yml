@@ -1,20 +1,53 @@
+# VetOS Production Docker Compose
+# For use with Coolify - includes coolify network for Traefik routing
+
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
     environment:
-      - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL}
-      - AUTH_SECRET=${AUTH_SECRET}
-      - NEXTAUTH_URL=${NEXTAUTH_URL}
-      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
-      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
-      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      NODE_ENV: production
+      DATABASE_URL: '${DATABASE_URL}'
+      AUTH_SECRET: '${AUTH_SECRET}'
+      NEXTAUTH_URL: '${NEXTAUTH_URL}'
+      NEXT_PUBLIC_SUPABASE_URL: '${NEXT_PUBLIC_SUPABASE_URL}'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: '${NEXT_PUBLIC_SUPABASE_ANON_KEY}'
+      SUPABASE_SERVICE_ROLE_KEY: '${SUPABASE_SERVICE_ROLE_KEY}'
+      OPENAI_API_KEY: '${OPENAI_API_KEY}'
     healthcheck:
-      test: [ "CMD", "node", "-e", "require('http').get('http://localhost:3000/api/auth/session', (r) => process.exit(r.statusCode === 200 ? 0 : 1))" ]
+      test:
+        - CMD
+        - wget
+        - '--no-verbose'
+        - '--tries=1'
+        - '--spider'
+        - 'http://localhost:3000/api/auth/session'
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 60s
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=coolify
+      # HTTP router - redirect to HTTPS
+      - traefik.http.routers.vetos-http.entrypoints=http
+      - traefik.http.routers.vetos-http.rule=Host(`app.digitaldog.pet`)
+      - traefik.http.routers.vetos-http.middlewares=redirect-to-https
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      # HTTPS router
+      - traefik.http.routers.vetos-https.entrypoints=https
+      - traefik.http.routers.vetos-https.rule=Host(`app.digitaldog.pet`)
+      - traefik.http.routers.vetos-https.tls=true
+      - traefik.http.routers.vetos-https.tls.certresolver=letsencrypt
+      # Service port
+      - traefik.http.services.vetos.loadbalancer.server.port=3000
+    networks:
+      - coolify
+    env_file:
+      - .env
+
+networks:
+  coolify:
+    external: true
