@@ -28,9 +28,12 @@ export default async function AgendaPage({
     // Fix: Parse YYYY-MM-DD manually to create a Local Date (00:00:00) 
     // instead of new Date(string) which assumes UTC and might shift day
     let selectedDate = new Date();
+    // Default to Noon to safely handle timezone shifts when passing to client (avoid 00:00 -> Previous Day)
     if (dateParam) {
         const [year, month, day] = dateParam.split('-').map(Number);
-        selectedDate = new Date(year, month - 1, day);
+        selectedDate = new Date(year, month - 1, day, 12, 0, 0);
+    } else {
+        selectedDate.setHours(12, 0, 0, 0);
     }
 
     const { data: appointments } = await getDayAppointments(selectedDate);

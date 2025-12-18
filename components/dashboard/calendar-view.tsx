@@ -72,9 +72,8 @@ export function CalendarView({
 
     const handleDateClick = (day: Date) => {
         setSelectedDate(day);
-        // Use router to update URL, forcing page reload (Server Component) with new date
-        // Format as YYYY-MM-DD for consistency
-        const dateStr = day.toISOString().split('T')[0];
+        // Use local format to avoid UTC shifting
+        const dateStr = format(day, 'yyyy-MM-dd');
         router.push(`/dashboard/agenda?date=${dateStr}`);
     };
 

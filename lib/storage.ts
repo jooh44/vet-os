@@ -1,84 +1,54 @@
-import * as Minio from 'minio';
 
-const accessKey = process.env.MINIO_ACCESS_KEY;
-const secretKey = process.env.MINIO_SECRET_KEY;
+import { supabase } from '@/lib/supabase';
 
-if (process.env.NODE_ENV === 'production' && (!accessKey || !secretKey)) {
-    console.error('CRITICAL SECURITY WARNING: MinIO credentials missing in production!');
-}
+// Standard bucket for the application
+const BUCKET_NAME = 'vetos-public';
 
-const rawEndPoint = process.env.MINIO_ENDPOINT || 'localhost';
-// Remove protocol (http:// or https://) and port if present
-const endPoint = rawEndPoint.replace(/^https?:\/\//, '').split(':')[0];
-
-const minioClient = new Minio.Client({
-    endPoint: endPoint,
-    port: parseInt(process.env.MINIO_PORT || '9000'),
-    useSSL: process.env.MINIO_USE_SSL === 'true',
-    accessKey: accessKey || 'minioadmin',
-    secretKey: secretKey || 'minioadmin',
-});
-
-
-const BUCKET_NAME = process.env.MINIO_BUCKET || 'fred-storage';
-
-export const initMinio = async () => {
-    try {
-        const exists = await minioClient.bucketExists(BUCKET_NAME);
-        if (!exists) {
-            await minioClient.makeBucket(BUCKET_NAME, 'us-east-1');
-            console.log(`Bucket ${BUCKET_NAME} created successfully`);
-
-            // Set Policy to Public Read
-            const policy = {
-                Version: "2012-10-17",
-                Statement: [
-                    {
-                        Effect: "Allow",
-                        Principal: { AWS: ["*"] },
-                        Action: ["s3:GetObject"],
-                        Resource: [`arn:aws:s3:::${BUCKET_NAME}/*`]
-                    }
-                ]
-            };
-            await minioClient.setBucketPolicy(BUCKET_NAME, JSON.stringify(policy));
-            console.log(`Bucket policy set to public read`);
-        } else {
-            console.log(`Bucket ${BUCKET_NAME} already exists`);
-        }
-    } catch (error) {
-        console.error('Error initializing MinIO:', error);
-    }
-};
-
+/**
+ * Uploads a file to Supabase Storage.
+ * @param file The file object to upload
+ * @param folder The folder path (e.g. 'pets', 'tutors')
+ * @returns Public URL of the uploaded file
+ */
 export async function uploadFile(file: File, folder: string = 'pets'): Promise<string> {
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const filename = `${folder}/${Date.now()}-${file.name.replace(/\s/g, '-')}`;
+    try {
+        const fileExt = file.name.split('.').pop();
+        const cleanFileName = file.name.replace(/[^a-zA-Z0-9]/g, '-');
+        const fileName = `${folder}/${Date.now()}-${cleanFileName}.${fileExt}`;
 
-    // Ensure bucket exists
-    const exists = await minioClient.bucketExists(BUCKET_NAME);
-    if (!exists) {
-        await minioClient.makeBucket(BUCKET_NAME, 'us-east-1');
-        const policy = {
-            Version: "2012-10-17",
-            Statement: [
-                {
-                    Effect: "Allow",
-                    Principal: { AWS: ["*"] },
-                    Action: ["s3:GetObject"],
-                    Resource: [`arn:aws:s3:::${BUCKET_NAME}/*`]
-                }
-            ]
-        };
-        await minioClient.setBucketPolicy(BUCKET_NAME, JSON.stringify(policy));
+        // 1. Upload
+        const { data, error } = await supabase.storage
+            .from(BUCKET_NAME)
+            .upload(fileName, file, {
+                cacheControl: '3600',
+                upsert: false
+            });
+
+        if (error) {
+            console.error('Supabase Upload Error:', error);
+
+            // Handle "Bucket not found" specifically if possible, but usually it's just an error object
+            if (error.message.includes('bucket not found')) {
+                throw new Error(`Bucket '${BUCKET_NAME}' não existe no Supabase. Crie-o como 'Public' no dashboard.`);
+            }
+            throw error;
+        }
+
+        // 2. Get Public URL
+        const { data: publicUrlData } = supabase.storage
+            .from(BUCKET_NAME)
+            .getPublicUrl(fileName);
+
+        return publicUrlData.publicUrl;
+
+    } catch (error) {
+        console.error('UploadFile Failed:', error);
+        throw error;
     }
-
-    await minioClient.putObject(BUCKET_NAME, filename, buffer, file.size);
-
-    // Construct local MinIO URL or public URL
-    // Since we are in Docker, we might need to handle localhost vs container host
-    // For now, assuming localhost access for the user browser
-    return `http://localhost:9000/${BUCKET_NAME}/${filename}`;
 }
 
-export { minioClient, BUCKET_NAME };
+// Legacy export if needed, or just dummy
+export const initMinio = async () => {
+    // No-op for Supabase replacement
+    console.log("Storage initialized (Supabase)");
+};

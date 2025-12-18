@@ -3,6 +3,7 @@
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { uploadFile } from '@/lib/storage';
 
 const UpdatePetSchema = z.object({
     id: z.string(),
@@ -36,10 +37,21 @@ export async function updatePet(formData: FormData) {
     const { id, name, species, breed, weight, birthDate, notes, allergies } = result.data;
 
     try {
+        let photoUrl = undefined;
+        const photoFile = formData.get('photo');
+
+        if (photoFile && photoFile instanceof File && photoFile.size > 0) {
+            photoUrl = await uploadFile(photoFile, 'pets');
+        }
+
         await prisma.pet.update({
             where: { id },
             data: {
                 name,
+                photoUrl: photoUrl, // Only updates if not undefined. If undefined, prisma ignores? No, undefined works for optional in create but update needs explicit.
+                // Actually, if I pass undefined to prisma update, it does nothing? 
+                // Let's check logic: If photoUrl is set, update it. If not, don't touch it.
+                ...(photoUrl ? { photoUrl } : {}),
                 species: species as any, // Cast to any or import Species enum if available
                 breed: breed || null,
                 weight: weight ? parseFloat(weight.replace(',', '.')) : null,
@@ -64,15 +76,30 @@ export async function updatePet(formData: FormData) {
 export async function deletePet(id: string) {
     try {
         await prisma.$transaction(async (tx: any) => {
-            // 1. Delete Medical Records
-            await tx.medicalRecord.deleteMany({
+            // 1. Delete Vaccines
+            await tx.vaccine.deleteMany({
                 where: { petId: id }
             });
 
-            // 2. Delete Appointments
-            await tx.appointment.deleteMany({
-                where: { petId: id }
+            // 2. Delete Consultations (and their Documents)
+            const consultations = await tx.consultation.findMany({
+                where: { petId: id },
+                select: { id: true }
             });
+
+            const consultationIds = consultations.map((c: any) => c.id);
+
+            if (consultationIds.length > 0) {
+                // Delete Documents linked to these consultations
+                await tx.document.deleteMany({
+                    where: { consultationId: { in: consultationIds } }
+                });
+
+                // Delete Consultations
+                await tx.consultation.deleteMany({
+                    where: { id: { in: consultationIds } }
+                });
+            }
 
             // 3. Delete Pet
             await tx.pet.delete({
