@@ -1,12 +1,20 @@
-
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-if (!supabaseUrl || !supabaseKey) {
-    // Only warn in dev, or handle graceful degradation
+if (!supabaseUrl || !supabaseAnonKey) {
     console.warn('Supabase credentials missing.');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+// Public client for client-side operations (read-only)
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+// Admin client for server-side operations (uploads, deletes)
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+    auth: {
+        autoRefreshToken: false,
+        persistSession: false
+    }
+});

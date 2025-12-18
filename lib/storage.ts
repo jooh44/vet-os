@@ -1,11 +1,10 @@
-
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 
 // Standard bucket for the application
 const BUCKET_NAME = 'vetos-public';
 
 /**
- * Uploads a file to Supabase Storage.
+ * Uploads a file to Supabase Storage using admin client.
  * @param file The file object to upload
  * @param folder The folder path (e.g. 'pets', 'tutors')
  * @returns Public URL of the uploaded file
@@ -16,10 +15,15 @@ export async function uploadFile(file: File, folder: string = 'pets'): Promise<s
         const cleanFileName = file.name.replace(/[^a-zA-Z0-9]/g, '-');
         const fileName = `${folder}/${Date.now()}-${cleanFileName}.${fileExt}`;
 
-        // 1. Upload
-        const { data, error } = await supabase.storage
+        // Convert File to ArrayBuffer for server-side upload
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        // 1. Upload using admin client (service role key)
+        const { data, error } = await supabaseAdmin.storage
             .from(BUCKET_NAME)
-            .upload(fileName, file, {
+            .upload(fileName, buffer, {
+                contentType: file.type,
                 cacheControl: '3600',
                 upsert: false
             });
@@ -27,15 +31,14 @@ export async function uploadFile(file: File, folder: string = 'pets'): Promise<s
         if (error) {
             console.error('Supabase Upload Error:', error);
 
-            // Handle "Bucket not found" specifically if possible, but usually it's just an error object
-            if (error.message.includes('bucket not found')) {
+            if (error.message.includes('bucket not found') || error.message.includes('Bucket not found')) {
                 throw new Error(`Bucket '${BUCKET_NAME}' não existe no Supabase. Crie-o como 'Public' no dashboard.`);
             }
             throw error;
         }
 
         // 2. Get Public URL
-        const { data: publicUrlData } = supabase.storage
+        const { data: publicUrlData } = supabaseAdmin.storage
             .from(BUCKET_NAME)
             .getPublicUrl(fileName);
 
@@ -47,8 +50,7 @@ export async function uploadFile(file: File, folder: string = 'pets'): Promise<s
     }
 }
 
-// Legacy export if needed, or just dummy
+// Legacy export if needed
 export const initMinio = async () => {
-    // No-op for Supabase replacement
     console.log("Storage initialized (Supabase)");
 };

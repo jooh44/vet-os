@@ -1,4 +1,6 @@
 import prisma from '@/lib/prisma';
+import { auth } from '@/auth';
+import { redirect } from 'next/navigation';
 import Timeline from '@/components/pets/timeline';
 import { notFound } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -16,8 +18,19 @@ import { PetAudioActions } from '@/components/pets/pet-audio-actions';
 import { FredPetContext } from '@/components/pets/fred-pet-context';
 
 export default async function PetProfilePage({ params }: { params: { id: string } }) {
-    const pet = await prisma.pet.findUnique({
-        where: { id: params.id },
+    const session = await auth();
+    const userId = session?.user?.id;
+
+    if (!userId) {
+        redirect('/login');
+    }
+
+    // Data Isolation: Only fetch pets belonging to tutors created by this vet
+    const pet = await prisma.pet.findFirst({
+        where: {
+            id: params.id,
+            tutor: { createdByVetId: userId }
+        },
         include: {
             tutor: { include: { user: true } },
             consultations: { orderBy: { date: 'desc' } }

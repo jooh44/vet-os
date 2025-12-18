@@ -1,4 +1,5 @@
 import prisma from '@/lib/prisma';
+import { auth } from '@/auth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -13,9 +14,19 @@ import { redirect } from 'next/navigation';
 import { MessageSquare } from 'lucide-react';
 
 export default async function TutorDetailsPage({ params }: { params: { id: string } }) {
-    // Determine if ID is Tutor ID or User ID (handling both for robustness)
+    const session = await auth();
+    const userId = session?.user?.id;
+
+    if (!userId) {
+        redirect('/login');
+    }
+
+    // Data Isolation: Only fetch tutors created by this vet
     const tutor = await prisma.tutor.findFirst({
-        where: { OR: [{ id: params.id }, { userId: params.id }] },
+        where: {
+            OR: [{ id: params.id }, { userId: params.id }],
+            createdByVetId: userId
+        },
         include: {
             user: true,
             pets: { orderBy: { createdAt: 'desc' } }
