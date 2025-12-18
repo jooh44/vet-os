@@ -8,7 +8,7 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
-RUN rm -rf package-lock.json node_modules && npm install --verbose
+RUN rm -rf package-lock.json node_modules && npm install --verbose --legacy-peer-deps
 
 # Rebuild the source code only when needed
 FROM base AS builder
