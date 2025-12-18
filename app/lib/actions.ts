@@ -101,6 +101,9 @@ export async function createPet(tutorIdArg: string | null | undefined, prevState
     // If tutorIdArg is provided (from Bind), use it. Otherwise, try to get from FormData.
     const tutorId = tutorIdArg || formData.get('tutorId') as string;
 
+    console.log('[createPet] Starting with tutorId:', tutorId);
+    console.log('[createPet] Form data keys:', Array.from(formData.keys()));
+
     const validatedFields = PetFormSchema.safeParse({
         name: formData.get('name'),
         species: formData.get('species'),
@@ -111,6 +114,7 @@ export async function createPet(tutorIdArg: string | null | undefined, prevState
     });
 
     if (!validatedFields.success) {
+        console.log('[createPet] Validation failed:', validatedFields.error.flatten());
         return {
             errors: validatedFields.error.flatten().fieldErrors,
             message: 'Campos inválidos. Falha ao cadastrar pet.',
@@ -122,10 +126,19 @@ export async function createPet(tutorIdArg: string | null | undefined, prevState
 
     try {
         const photoFile = formData.get('photo');
-        if (photoFile && photoFile instanceof File && photoFile.size > 0) {
-            photoUrl = await uploadFile(photoFile, 'pets');
+        console.log('[createPet] Photo file present:', !!photoFile);
+        console.log('[createPet] Photo instanceof File:', photoFile instanceof File);
+        if (photoFile instanceof File) {
+            console.log('[createPet] Photo details - name:', photoFile.name, 'type:', photoFile.type, 'size:', photoFile.size);
         }
 
+        if (photoFile && photoFile instanceof File && photoFile.size > 0) {
+            console.log('[createPet] Uploading photo...');
+            photoUrl = await uploadFile(photoFile, 'pets');
+            console.log('[createPet] Photo uploaded:', photoUrl);
+        }
+
+        console.log('[createPet] Creating pet in database...');
         await prisma.pet.create({
             data: {
                 name,
@@ -137,9 +150,10 @@ export async function createPet(tutorIdArg: string | null | undefined, prevState
                 tutorId
             }
         });
+        console.log('[createPet] Pet created successfully');
 
     } catch (error) {
-        console.error('Database/Storage Error:', error);
+        console.error('[createPet] Error:', error);
         return {
             message: `Erro ao salvar pet: ${error instanceof Error ? error.message : String(error)}`,
         };
