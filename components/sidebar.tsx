@@ -45,7 +45,7 @@ export default function Sidebar({ userRole }: { userRole?: string }) {
                     <ShieldCheck className="h-5 w-5 text-primary" />
                 </div>
                 <h1 className="text-3xl font-normal text-primary flex items-center gap-2">
-                    Vet.OS <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold tracking-wider">BETA</span>
+                    Vet.OS <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold tracking-wider">BETA v.Fix2</span>
                 </h1>
             </div>
             <div className="flex-1 overflow-y-auto py-4">
