@@ -25,7 +25,7 @@ export default function CreatePetForm({ tutorId }: { tutorId: string }) {
     return (
         <Card className="w-full max-w-2xl mx-auto">
             <CardHeader>
-                <CardTitle>Novo Pet</CardTitle>
+                <CardTitle>Novo Pet (v.Fix)</CardTitle>
                 <CardDescription>
                     Cadastre um novo paciente para este tutor.
                 </CardDescription>
