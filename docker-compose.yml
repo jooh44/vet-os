@@ -43,8 +43,10 @@ services:
       - traefik.http.routers.vetos-https.tls=true
       - traefik.http.routers.vetos-https.tls.certresolver=letsencrypt
       - traefik.http.routers.vetos-https.service=vetos
-      # Service port
+      # Service definition for 'vetos' (custom routers)
       - traefik.http.services.vetos.loadbalancer.server.port=3000
+      # Service definition for 'app' (Coolify generated routers fallback)
+      - traefik.http.services.app.loadbalancer.server.port=3000
     networks:
       - coolify
     env_file:
