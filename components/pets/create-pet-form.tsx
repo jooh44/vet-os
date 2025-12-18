@@ -14,23 +14,27 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useState } from 'react';
 
 export default function CreatePetForm({ tutorId }: { tutorId: string }) {
     const initialState = { message: null, errors: {} };
     const createPetWithId = createPet.bind(null, tutorId);
     // @ts-ignore
     const [state, dispatch] = useFormState(createPetWithId, initialState);
+    const [species, setSpecies] = useState('');
 
     return (
         <Card className="w-full max-w-2xl mx-auto">
             <CardHeader>
-                <CardTitle>Novo Pet (v.Fix)</CardTitle>
+                <CardTitle>Novo Pet (v.Fix3)</CardTitle>
                 <CardDescription>
                     Cadastre um novo paciente para este tutor.
                 </CardDescription>
             </CardHeader>
             <form action={dispatch}>
+                {/* Hidden input for species to ensure form submission works */}
+                <input type="hidden" name="species" value={species} />
+
                 <CardContent className="grid gap-4">
                     <div className="grid gap-2">
                         <Label htmlFor="name">Nome do Pet</Label>
@@ -43,17 +47,19 @@ export default function CreatePetForm({ tutorId }: { tutorId: string }) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="grid gap-2">
                             <Label htmlFor="species">Espécie</Label>
-                            <Select name="species" required>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Selecione" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="DOG">Cachorro</SelectItem>
-                                    <SelectItem value="CAT">Gato</SelectItem>
-                                    <SelectItem value="BIRD">Pássaro</SelectItem>
-                                    <SelectItem value="OTHER">Outro</SelectItem>
-                                </SelectContent>
-                            </Select>
+                            <select
+                                id="species-select"
+                                className="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                                value={species}
+                                onChange={(e) => setSpecies(e.target.value)}
+                                required
+                            >
+                                <option value="">Selecione...</option>
+                                <option value="DOG">Cachorro</option>
+                                <option value="CAT">Gato</option>
+                                <option value="BIRD">Pássaro</option>
+                                <option value="OTHER">Outro</option>
+                            </select>
                             {state.errors?.species && (
                                 <p className="text-sm text-red-500">{state.errors.species}</p>
                             )}
