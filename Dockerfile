@@ -8,7 +8,7 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
-RUN npm install
+RUN rm -rf package-lock.json node_modules && npm install --verbose
 
 # Rebuild the source code only when needed
 FROM base AS builder
