@@ -38,6 +38,9 @@ model User {
   startedChats     ChatSession[]  @relation("VetChats")
   
   calculationLogs  CalculationLog[]
+  
+  // Private Practice Relations
+  createdTutors    Tutor[]        @relation("VetTutors")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -59,6 +62,12 @@ model Tutor {
   
   pets      Pet[]
   chatSessions ChatSession[]
+
+
+
+  // Private Practice Isolation
+  createdByVetId String?
+  createdByVet   User?   @relation("VetTutors", fields: [createdByVetId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -1,4 +1,6 @@
 import prisma from '@/lib/prisma'
+import { auth } from '@/auth'
+import { Role } from '@prisma/client'
 
 const ITEMS_PER_PAGE = 10
 
@@ -6,28 +8,32 @@ export async function fetchFilteredTutors(
     query: string,
     currentPage: number,
 ) {
+    const session = await auth();
+    const userId = session?.user?.id;
+
     const offset = (currentPage - 1) * ITEMS_PER_PAGE
+
+    // Strict Private Practice Filter (SaaS Model)
+    // "Na real não era nem pra aparecer tutores cadastrados que não fossem do medico."
+    // Every user sees ONLY their own data.
+    const whereCondition: any = {
+        OR: [
+            { user: { name: { contains: query, mode: 'insensitive' } } },
+            { cpf: { contains: query, mode: 'insensitive' } },
+        ],
+    };
+
+    if (userId) {
+        whereCondition.createdByVetId = userId;
+    } else {
+        // If no user (should rely on auth() above? yes), return empty or error?
+        // Let's assume protected route. If no userId, returns nothing.
+        return [];
+    }
 
     try {
         const tutors = await prisma.tutor.findMany({
-            where: {
-                OR: [
-                    {
-                        user: {
-                            name: {
-                                contains: query,
-                                mode: 'insensitive',
-                            },
-                        },
-                    },
-                    {
-                        cpf: {
-                            contains: query,
-                            mode: 'insensitive',
-                        },
-                    },
-                ],
-            },
+            where: whereCondition,
             include: {
                 user: {
                     select: {
@@ -51,26 +57,25 @@ export async function fetchFilteredTutors(
 }
 
 export async function fetchTutorsPages(query: string) {
+    const session = await auth();
+    const userId = session?.user?.id;
+
+    const whereCondition: any = {
+        OR: [
+            { user: { name: { contains: query, mode: 'insensitive' } } },
+            { cpf: { contains: query, mode: 'insensitive' } },
+        ],
+    };
+
+    if (userId) {
+        whereCondition.createdByVetId = userId;
+    } else {
+        return 0;
+    }
+
     try {
         const count = await prisma.tutor.count({
-            where: {
-                OR: [
-                    {
-                        user: {
-                            name: {
-                                contains: query,
-                                mode: 'insensitive',
-                            },
-                        },
-                    },
-                    {
-                        cpf: {
-                            contains: query,
-                            mode: 'insensitive',
-                        },
-                    },
-                ],
-            },
+            where: whereCondition,
         })
         const totalPages = Math.ceil(count / ITEMS_PER_PAGE)
         return totalPages
@@ -84,30 +89,31 @@ export async function fetchFilteredPets(
     query: string,
     currentPage: number,
 ) {
+    const session = await auth();
+    const userId = session?.user?.id;
+
     const offset = (currentPage - 1) * ITEMS_PER_PAGE
+
+    const whereCondition: any = {
+        OR: [
+            { name: { contains: query, mode: 'insensitive' } },
+            { tutor: { user: { name: { contains: query, mode: 'insensitive' } } } },
+        ],
+    };
+
+    // If VET (or any user in SaaS mode), restrict to pets owned by tutors created by this user
+    if (userId) {
+        whereCondition.tutor = {
+            ...(whereCondition.tutor || {}),
+            createdByVetId: userId
+        };
+    } else {
+        return [];
+    }
 
     try {
         const pets = await prisma.pet.findMany({
-            where: {
-                OR: [
-                    {
-                        name: {
-                            contains: query,
-                            mode: 'insensitive',
-                        },
-                    },
-                    {
-                        tutor: {
-                            user: {
-                                name: {
-                                    contains: query,
-                                    mode: 'insensitive',
-                                },
-                            },
-                        },
-                    },
-                ],
-            },
+            where: whereCondition,
             include: {
                 tutor: {
                     include: {
@@ -131,28 +137,28 @@ export async function fetchFilteredPets(
 }
 
 export async function fetchPetsPages(query: string) {
+    const session = await auth();
+    const userId = session?.user?.id;
+
+    const whereCondition: any = {
+        OR: [
+            { name: { contains: query, mode: 'insensitive' } },
+            { tutor: { user: { name: { contains: query, mode: 'insensitive' } } } },
+        ],
+    };
+
+    if (userId) {
+        whereCondition.tutor = {
+            ...(whereCondition.tutor || {}),
+            createdByVetId: userId
+        };
+    } else {
+        return 0;
+    }
+
     try {
         const count = await prisma.pet.count({
-            where: {
-                OR: [
-                    {
-                        name: {
-                            contains: query,
-                            mode: 'insensitive',
-                        },
-                    },
-                    {
-                        tutor: {
-                            user: {
-                                name: {
-                                    contains: query,
-                                    mode: 'insensitive',
-                                },
-                            },
-                        },
-                    },
-                ],
-            },
+            where: whereCondition,
         })
         const totalPages = Math.ceil(count / ITEMS_PER_PAGE)
         return totalPages

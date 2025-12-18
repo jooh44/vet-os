@@ -1,6 +1,6 @@
 'use server'
 
-import { signIn, signOut } from '@/auth'
+import { signIn, signOut, auth } from '@/auth'
 import { AuthError } from 'next-auth'
 
 export async function authenticate(
@@ -55,6 +55,11 @@ export async function createTutor(prevState: any, formData: FormData) {
     const { name, email, cpf, phone, address } = validatedFields.data;
     const hashedPassword = await bcrypt.hash('123456', 10); // Default password
 
+    const session = await auth();
+    if (!session?.user?.id) {
+        return { message: 'Erro: Usuário não autenticado.' };
+    }
+
     try {
         await prisma.$transaction(async (tx: any) => {
             const user = await tx.user.create({
@@ -71,7 +76,8 @@ export async function createTutor(prevState: any, formData: FormData) {
                     cpf,
                     phone,
                     address,
-                    userId: user.id
+                    userId: user.id,
+                    createdByVetId: session.user.id as any // Strict Isolation - Cast to any to bypass potential type mismatch during codegen lagg // Private Practice Link
                 }
             });
         });
@@ -223,7 +229,6 @@ export async function createMedicalRecord(formData: FormData) {
 }
 
 import { processConsultationAudio } from './ai-actions';
-import { auth } from '@/auth';
 
 // Helper to get active vet ID (Fallback for Dev Mode)
 async function getActiveVetId() {

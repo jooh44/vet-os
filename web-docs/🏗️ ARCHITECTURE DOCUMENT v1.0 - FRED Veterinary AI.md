@@ -22,7 +22,6 @@
 | Segurança | LGPD + HTTPS + encryption |
 | Performance Target | >85 mobile Lighthouse |
 
-
 ***
 
 ## 1. System Architecture Overview
@@ -82,8 +81,8 @@
 │  │  ├─ ConsultationService                                 │    │
 │  │  ├─ MedicalRecordService                                │    │
 │  │  ├─ TranscriptionService                                │    │
-│  │  ├─ FredarService (chat + monitoring)                   │    │
-│  │  ├─ CompetitorService (farejador)                       │    │
+│  │  ├─ FredarService (chat + reminders)                    │    │
+│  │  ├─ TeleconsultaService (video + links)                 │    │
 │  │  └─ BillingService                                      │    │
 │  └─────────────────────────────────────────────────────────┘    │
 │                                                                   │
@@ -132,7 +131,6 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### 1.2 Component Diagram (Detalhe Interno)
 
 ```
@@ -149,7 +147,8 @@
 │  │  ├─ (consultations)     [Criar/editar/cancelar]                │  │
 │  │  ├─ (records)           [Histórico prontuários]                │  │
 │  │  ├─ (prescriptions)     [Geração receitas]                     │  │
-│  │  ├─ (fredar)            [Chat FRED + Farejador]                │  │
+│  │  ├─ (teleconsulta)      [Sala Virtual Video + Prontuário]      │  │
+│  │  ├─ (fredar)            [Chat FRED Assistant]                  │  │
 │  │  ├─ (tutor-portal)      [Portal para clientes]                 │  │
 │  │  ├─ (settings)          [Configurações clínica/user]           │  │
 │  │  ├─ (auth)              [Login/signup/reset]                   │  │
@@ -158,7 +157,7 @@
 │  │  Shared Components:                                             │  │
 │  │  ├─ /components/ui      [Buttons, cards, forms, etc]           │  │
 │  │  ├─ /components/fred    [Chat, notifications, mini-ficha]      │  │
-│  │  ├─ /components/charts  [Gráficos concorrentes]                │  │
+│  │  ├─ /components/video   [Video-call interface]                 │  │
 │  │  └─ /hooks              [useAuth, useFredar, useConsultation]  │  │
 │  │                                                                  │  │
 │  └────────────────────────────────────────────────────────────────┘  │
@@ -172,8 +171,8 @@
 │  │  ├─ /api/records/        [Medical record CRUD]                 │  │
 │  │  ├─ /api/transcription/  [Upload + Whisper call]               │  │
 │  │  ├─ /api/prescriptions/  [Generate + template]                 │  │
-│  │  ├─ /api/fredar/         [Chat + search + reminders]           │  │
-│  │  ├─ /api/competitors/    [Monitor + list + add]                │  │
+│  │  ├─ /api/fredar/         [Chat + reminders]                    │  │
+│  │  ├─ /api/teleconsulta/   [Room Token generation]               │  │
 │  │  ├─ /api/billing/        [Stripe webhook + subscription]       │  │
 │  │  └─ /api/webhooks/       [Stripe, email delivery, etc]         │  │
 │  │                                                                  │  │
@@ -192,7 +191,7 @@
 │  │  ├─ transcriptionService [Whisper call + retries]              │  │
 │  │  ├─ medicalRecordService [GPT-4o call + validation]            │  │
 │  │  ├─ fredarService        [Gemini integration + search]          │  │
-│  │  ├─ competitorService    [Gemini Grounding + crawl]            │  │
+│  │  ├─ teleconsultaService  [Video provider integration]           │  │
 │  │  ├─ storageService       [MinIO S3 operations]                  │  │
 │  │  ├─ notificationService  [Email/SMS/chat notifications]         │  │
 │  │  ├─ billingService       [Stripe API calls]                     │  │
@@ -214,7 +213,6 @@
 │                                                                        │
 └──────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### 1.3 Data Flow Diagram (Audio → Prontuário)
 
@@ -325,7 +323,6 @@ TIMELINE: Audio upload → Prontuário pronto ~5-7 minutes
    4. Vet review: Manual (5-10 min)
    5. Save: <1s
 ```
-
 
 ### 1.4 Data Flow Diagram (FRED Chat - Natural Search)
 
@@ -447,7 +444,6 @@ FRED says so explicitly and suggests actions.
 
 LATENCY TARGET: <2s end-to-end (including Gemini call)
 ```
-
 
 ### 1.5 Farejador Daily Journal Flow
 
@@ -602,7 +598,6 @@ KEY CHARACTERISTICS:
 - Escalável: Mesmo job roda para 1-1000 clínicas
 ```
 
-
 ***
 
 ## 2. Technology Stack Deep Dive
@@ -641,7 +636,6 @@ KEY CHARACTERISTICS:
 - CSS minification
 - JS minification + terser
 
-
 ### 2.2 Backend Stack
 
 | Tecnologia | Versão | Função | Justificativa |
@@ -676,7 +670,6 @@ export const prisma = globalForPrisma.prisma || new PrismaClient()
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 ```
-
 
 ### 2.3 IA Integrations
 
@@ -760,7 +753,6 @@ export async function fredarChat(
   return response.response.text()
 }
 ```
-
 
 ### 2.4 Storage Architecture
 
@@ -856,7 +848,6 @@ model Pet {
 }
 ```
 
-
 ### 3.2 Migration Strategy
 
 ```bash
@@ -870,7 +861,6 @@ npx prisma migrate deploy  # Runs pending migrations
 npx prisma migrate resolve --rolled-back migration_name
 ```
 
-
 ### 3.3 Backup \& Restore
 
 ```bash
@@ -883,7 +873,6 @@ b2 sync /backups b2://fred-backups/
 # Restore from backup
 psql -h localhost -U postgres fred_db < /backups/fred_20251206_020000.sql
 ```
-
 
 ***
 
@@ -911,7 +900,6 @@ Status Codes:
 ├─ 409 Conflict            (Duplicate/conflict)
 └─ 500 Server Error        (Unexpected error)
 ```
-
 
 ### 4.2 Request/Response Format
 
@@ -953,7 +941,6 @@ Status Codes:
 }
 ```
 
-
 ### 4.3 Authentication Flow
 
 ```
@@ -980,7 +967,6 @@ Status Codes:
 6. POST /api/auth/logout
    Response: Clear cookies, invalidate refresh token
 ```
-
 
 ### 4.4 Sample API Endpoints Detail
 
@@ -1179,7 +1165,6 @@ Response (200 OK):
 }
 ```
 
-
 ***
 
 ## 5. External Integrations
@@ -1283,7 +1268,6 @@ export async function logAPICost(
   }
 }
 ```
-
 
 ### 5.2 Google Gemini Integration
 
@@ -1427,7 +1411,6 @@ export async function logGeminiUsage(
 }
 ```
 
-
 ### 5.3 Stripe Integration
 
 ```typescript
@@ -1531,7 +1514,6 @@ export async function cancelSubscription(clinicId: string) {
 }
 ```
 
-
 ***
 
 ## 6. Infrastructure \& DevOps
@@ -1554,7 +1536,6 @@ export async function cancelSubscription(clinicId: string) {
 - Configure backup retention
 - Set up monitoring/alerts
 ```
-
 
 ### 6.2 Docker Compose Architecture
 
@@ -1648,7 +1629,6 @@ volumes:
   minio-data:
 ```
 
-
 ### 6.3 CI/CD Pipeline (GitHub Actions)
 
 ```yaml
@@ -1732,7 +1712,6 @@ jobs:
             -d '{"content":"Deployment failed!"}'
 ```
 
-
 ### 6.4 Monitoring \& Logging
 
 ```typescript
@@ -1774,7 +1753,6 @@ export function captureException(error: Error, context: object) {
   log.error({ error: error.message, stack: error.stack, ...context })
 }
 ```
-
 
 ***
 
@@ -1845,7 +1823,6 @@ export async function exportUserData(userId: string) {
 }
 ```
 
-
 ### 7.2 Encryption Strategy
 
 ```typescript
@@ -1898,7 +1875,6 @@ prisma.$use(async (params, next) => {
 })
 ```
 
-
 ### 7.3 RBAC Implementation
 
 ```typescript
@@ -1950,7 +1926,6 @@ export async function requirePermission(
 }
 ```
 
-
 ***
 
 ## 8. Performance \& Scalability
@@ -1977,7 +1952,6 @@ Scalability:
 ├─ Database size: 100GB+ (managed)
 └─ File storage: Unlimited (S3-compatible)
 ```
-
 
 ### 8.2 Caching Strategy
 
@@ -2024,7 +1998,6 @@ export const consultationQuery = {
 }
 ```
 
-
 ### 8.3 Database Optimization
 
 ```sql
@@ -2061,7 +2034,6 @@ generator client {
 -- Instead of: 100 individual INSERT queries
 -- Use: INSERT INTO ... VALUES (...), (...), (...);
 ```
-
 
 ***
 
@@ -2237,7 +2209,6 @@ async function runCleanupJob() {
   }
 }
 ```
-
 
 ***
 
@@ -2449,7 +2420,6 @@ async function runCleanupJob() {
 Target: 80% coverage (unit), 30% E2E
 ```
 
-
 ### 11.2 Unit Tests
 
 ```typescript
@@ -2477,7 +2447,6 @@ describe('medicalRecordService.generateMedicalRecord', () => {
   })
 })
 ```
-
 
 ### 11.3 API Integration Tests
 
@@ -2515,7 +2484,6 @@ describe('POST /api/consultations', () => {
 })
 ```
 
-
 ### 11.4 E2E Tests
 
 ```typescript
@@ -2551,7 +2519,6 @@ test.describe('Vet creates consultation', () => {
 })
 ```
 
-
 ***
 
 ## 12. Disaster Recovery \& Backup
@@ -2572,7 +2539,6 @@ test.describe('Vet creates consultation', () => {
 **1 offsite**
 
 - Backblaze B2 (geographically distant)
-
 
 ### 12.2 Restore Procedure
 
@@ -2597,7 +2563,6 @@ test.describe('Vet creates consultation', () => {
    Verify audio files accessible
 ```
 
-
 ***
 
 ## 13. Implementation Timeline \& Dependencies
@@ -2611,7 +2576,6 @@ test.describe('Vet creates consultation', () => {
 - ✅ Farejador: Week 9-10 (dashboard, graphs)
 - ✅ Optimization: Week 11-12 (performance, accessibility)
 
-
 ### Back-End (API Layer)
 
 - ✅ Database: Week 1-2 (schema, migrations, Prisma)
@@ -2623,7 +2587,6 @@ test.describe('Vet creates consultation', () => {
 - ✅ Farejador: Week 8-9 (Gemini Grounding, CRON job)
 - ✅ Billing: Week 9-10 (Stripe integration, webhooks)
 - ✅ Optimization: Week 11-12 (caching, indexing, performance)
-
 
 ### Infrastructure
 
@@ -2656,7 +2619,6 @@ test.describe('Vet creates consultation', () => {
 | PROFESSIONAL | R\$ 199 | 200 consultations/mth |
 | ENTERPRISE | R\$ 299 | Unlimited |
 | **Gross Margin** (10 clinics) | ~R\$ 2.000/mth | 70%+ margin |
-
 
 ***
 

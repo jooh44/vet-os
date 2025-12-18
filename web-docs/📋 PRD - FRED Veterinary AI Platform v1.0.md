@@ -1,14 +1,14 @@
 <img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" style="height:64px;margin-right:32px"/>
 
-
 ***
 
 # 📋 PRD - FRED Veterinary AI Platform v1.0
 
 **Product Manager:** John (BMAD)
 **Data:** 06 de Dezembro de 2025
-**Status:** 🔄 EM DESENVOLVIMENTO
+**Status:** 🚀 MVP NO AR
 **Tipo:** Greenfield Full-Stack (MVP Web First)
+**Foco Atual:** Teleconsulta & Gestão Clínica
 
 ***
 
@@ -25,7 +25,6 @@
 | Idioma | Português Brasil |
 | Padrão Agenda | 1 hora (customizável onboarding) |
 
-
 ***
 
 ## 1. Visão do Produto
@@ -39,19 +38,17 @@ Veterinários gastam 40-60 minutos/dia preenchendo prontuários manualmente, des
 **FRED** - sistema all-in-one que:
 
 - ✅ Gera prontuários automáticos via IA (Whisper + GPT-4o)
-- ✅ Monitora concorrentes continuamente (Gemini Grounding Search)
+- ✅ Realiza Teleconsultas integradas (Vídeo + Prontuário)
 - ✅ Disponibiliza assistente AI 24/7 (FRED chat flutuante)
 - ✅ Centraliza gestão (agenda, tutores, pets, histórico, equipe)
-- ✅ Proporciona visão estratégica de mercado (Jornal do Fred diário)
-
 
 ### Diferencial Competitivo
 
-**Primeiro sistema veterinário BR com gestão + IA + inteligência mercado integrados**
+**Melhor sistema para Telemedicina Veterinária e Gestão Clínica com IA.**
 
 - SimplesVet: Gestão completa, SEM IA
 - AtendeVet: IA prontuários, SEM gestão completa
-- FRED: ✅ Gestão + ✅ IA + ✅ Inteligência Mercado
+- FRED: ✅ Gestão + ✅ IA + ✅ Telemedicina
 
 ***
 
@@ -63,7 +60,6 @@ Veterinários gastam 40-60 minutos/dia preenchendo prontuários manualmente, des
 - **Dor Principal:** Perde tempo em burocracias (prontuários manuais)
 - **Motivação:** Profissionalizar gestão + diferenciar competitivamente
 - **Plano Alvo:** PROFESSIONAL (R\$ 199/mês)
-
 
 ### Persona Secundária: Dr. Carlos (Autônomo)
 
@@ -84,22 +80,19 @@ Veterinários gastam 40-60 minutos/dia preenchendo prontuários manualmente, des
 - **Customização:** Clínica define no onboarding
 - **Flexibilidade:** Pode ajustar por veterinário (diferenças especialidade)
 
-
 #### 3.1.2 Horário Funcionamento
 
 - **Default:** 08:00 - 18:00 (seg-sex)
 - **Customização:** Clínica define no onboarding (ex: sábado até 13h)
 - **Bloqueios:** Feriados opcionais por região
 
-
 #### 3.1.3 Gestão Conflitos \& Overbooking
 
 - **Regra:** Sem conflitos por padrão
 - **Opção:** Clínica ativa "Overbooking controlado" se desejar
-    - Permite múltiplas consultas mesmo horário
-    - Aviso visual quando ativado ("⚠️ Sobrecarga")
-    - Limite customizável (ex: máx 2 consultas simultâneas)
-
+  - Permite múltiplas consultas mesmo horário
+  - Aviso visual quando ativado ("⚠️ Sobrecarga")
+  - Limite customizável (ex: máx 2 consultas simultâneas)
 
 #### 3.1.4 Visualização \& Navegação
 
@@ -108,29 +101,27 @@ Veterinários gastam 40-60 minutos/dia preenchendo prontuários manualmente, des
 - **Mês:** Grid calendário
 - **Cores:** Por veterinário (auto-assign, customizável)
 
-
 #### 3.1.5 Criar/Editar Consulta
 
 - **Modal criar:**
-    - Pet (seleção existente ou "novo pet" rápido)
-    - Data/hora (calendário picker)
-    - Veterinário (dropdown ou auto-assign próximo disponível)
-    - Tipo (rotina, urgência, retorno, etc - select)
-    - Observações (textarea)
-    - Tutor notificado? (checkbox - padrão SIM)
+  - Pet (seleção existente ou "novo pet" rápido)
+  - Data/hora (calendário picker)
+  - Veterinário (dropdown ou auto-assign próximo disponível)
+  - Tipo (rotina, urgência, retorno, etc - select)
+  - Observações (textarea)
+  - Tutor notificado? (checkbox - padrão SIM)
 - **Modal editar:**
-    - Todos campos acima editáveis
-    - Se muda horário → notifica veterinário + tutor
-    - Se tutor cancela → requer motivo (dropdown + textarea)
-    - Auditoria: Registra quem editou, quando, o quê
-
+  - Todos campos acima editáveis
+  - Se muda horário → notifica veterinário + tutor
+  - Se tutor cancela → requer motivo (dropdown + textarea)
+  - Auditoria: Registra quem editou, quando, o quê
 
 #### 3.1.6 Cancelamento/Reagendamento
 
 - **Quem pode:**
-    - Veterinário: Cancela com justificativa (para tutor receber motivo)
-    - Atendente: Cancela/reagenda com justificativa obrigatória
-    - Tutor (via app Fase 2): Cancela/solicita reagendamento
+  - Veterinário: Cancela com justificativa (para tutor receber motivo)
+  - Atendente: Cancela/reagenda com justificativa obrigatória
+  - Tutor (via app Fase 2): Cancela/solicita reagendamento
 - **Fluxo cancelamento:**
 
 1. Clica "Cancelar" em consulta
@@ -142,6 +133,7 @@ Veterinários gastam 40-60 minutos/dia preenchendo prontuários manualmente, des
         - Outro (especificar)
 3. Sistema notifica tutor (email + SMS + FRED se app)
 4. Consulta vai para histórico com motivo registrado
+
 - **Fluxo reagendamento:**
 
 1. Atendente clica "Reagendar"
@@ -149,14 +141,12 @@ Veterinários gastam 40-60 minutos/dia preenchendo prontuários manualmente, des
 3. Tutor recebe notificação nova data
 4. Histórico auditoria registra mudança
 
-
 #### 3.1.7 Lembretes Automáticos (CRON)
 
 - **1 dia antes:** Email + SMS para tutor ("Amanhã você tem consulta com [VET] em [VET]")
 - **24h antes:** FRED floats notification (se logado)
 - **1h antes:** Notificação FRED + email (último aviso)
 - **Tutor pode:** Confirmar presença (botão na notificação) ou solicitar cancelamento/reagendamento
-
 
 #### 3.1.8 Sincronismo Google Agenda (Fase 2)
 
@@ -192,7 +182,6 @@ Veterinários gastam 40-60 minutos/dia preenchendo prontuários manualmente, des
 
 - Ao cadastrar, busca CPF/Email existentes
 - Se encontra → aviso "Tutor já existe" com opção "Abrir perfil existente"
-
 
 #### 3.2.2 Pet (Animal)
 
@@ -243,7 +232,6 @@ Veterinários gastam 40-60 minutos/dia preenchendo prontuários manualmente, des
 - Por data (últimos 7 dias, 30 dias, 3 meses, tudo)
 - Por veterinário
 
-
 #### 3.3.2 Prontuários
 
 - Exibição read-only ou edição (veterinário que fez pode editar 48h)
@@ -251,14 +239,12 @@ Veterinários gastam 40-60 minutos/dia preenchendo prontuários manualmente, des
 - Data criação + última edição
 - Versão prévia (se editado, mostra histórico de versões)
 
-
 #### 3.3.3 Vacinas
 
 - Lista com data aplicação, fabricante, lote, próxima dose
 - Notificação automática 7 dias antes da próxima vacina
 - Status: "Aplicada", "Programada", "Atrasada"
 - Visível para tutor (via app) como "Carteirinha Digital"
-
 
 #### 3.3.4 Exames \& Cirurgias
 
@@ -274,42 +260,39 @@ Veterinários gastam 40-60 minutos/dia preenchendo prontuários manualmente, des
 
 - **Acesso:** TODOS dados (exceto programação sistema)
 - **Ações:**
-    - ✅ Criar/editar/deletar usuários (vets, atendentes)
-    - ✅ Editar informações clínica (nome, logo, horários)
-    - ✅ Visualizar relatórios (faturamento, uso sistema)
-    - ✅ Acessar configurações FRED (farejador, notificações)
-    - ❌ Logs auditoria (futuro Fase 2)
-
+  - ✅ Criar/editar/deletar usuários (vets, atendentes)
+  - ✅ Editar informações clínica (nome, logo, horários)
+  - ✅ Visualizar relatórios (faturamento, uso sistema)
+  - ✅ Acessar configurações FRED (farejador, notificações)
+  - ❌ Logs auditoria (futuro Fase 2)
 
 #### 3.4.2 Veterinário
 
 - **Acesso:** Seus pacientes apenas
 - **Ações:**
-    - ✅ Visualizar agenda própria + pacientes
-    - ✅ Criar/editar consultass próprias
-    - ✅ Editar prontuários próprios (apenas os seus)
-    - ✅ Gerar receitas
-    - ❌ Editar prontuários de outros vets
-    - ❌ Cancelar consulta (apenas justificar, admin cancela)
-    - ✅ Usar FRED chat (acesso completo)
-    - ✅ Ler Jornal do Fred
-
+  - ✅ Visualizar agenda própria + pacientes
+  - ✅ Criar/editar consultass próprias
+  - ✅ Editar prontuários próprios (apenas os seus)
+  - ✅ Gerar receitas
+  - ❌ Editar prontuários de outros vets
+  - ❌ Cancelar consulta (apenas justificar, admin cancela)
+  - ✅ Usar FRED chat (acesso completo)
+  - ✅ Ler Jornal do Fred
 
 #### 3.4.3 Atendente
 
 - **Acesso:** Agenda, tutores, pets (visualização)
 - **Ações:**
-    - ✅ Cadastrar novo tutor
-    - ✅ Cadastrar novo pet
-    - ✅ Agendar consultas (seleciona vet + data/hora)
-    - ✅ Reagendar consultas (com motivo obrigatório)
-    - ✅ Cancelar consultas (com motivo obrigatório)
-    - ✅ Visualizar histórico (não edita)
-    - ✅ Usar FRED chat (acesso básico: busca pacientes, lembretes)
-    - ❌ Editar prontuários
-    - ❌ Gerar receitas
-    - ❌ Acessar Jornal do Fred (informação sensível)
-
+  - ✅ Cadastrar novo tutor
+  - ✅ Cadastrar novo pet
+  - ✅ Agendar consultas (seleciona vet + data/hora)
+  - ✅ Reagendar consultas (com motivo obrigatório)
+  - ✅ Cancelar consultas (com motivo obrigatório)
+  - ✅ Visualizar histórico (não edita)
+  - ✅ Usar FRED chat (acesso básico: busca pacientes, lembretes)
+  - ❌ Editar prontuários
+  - ❌ Gerar receitas
+  - ❌ Acessar Jornal do Fred (informação sensível)
 
 #### 3.4.4 Fluxo Convite Usuário
 
@@ -335,14 +318,12 @@ Veterinários gastam 40-60 minutos/dia preenchendo prontuários manualmente, des
 - **Recuperação:** Email password reset (link 24h válido)
 - **2FA:** Opcional (implementar Fase 2)
 
-
 #### 3.5.2 Dashboard Tutor
 
 - **Pets do tutor:** Cards com foto, nome, próximos eventos
 - **Próximas consultas:** Lista (próximas 30 dias)
 - **Carteirinha digital:** Vacinas + exames (expandível)
 - **Histórico:** Últimas consultas (read-only)
-
 
 #### 3.5.3 Solicitações \& Aprovações
 
@@ -374,7 +355,6 @@ Veterinários gastam 40-60 minutos/dia preenchendo prontuários manualmente, des
 - **Ícone:** Logo FRED (mascote Digital Dog)
 - **Status:** Online 24/7 (Gemini sempre disponível)
 
-
 #### 3.6.2 Capacidades Principais
 
 **A. Chat Geral (Gemini 2.5 Flash)**
@@ -393,12 +373,12 @@ Veterinários gastam 40-60 minutos/dia preenchendo prontuários manualmente, des
 **C. Busca Natural Pacientes**
 
 - "Qual o último exame do Rex?"
-    - FRED busca pet "Rex" → mostra mini-ficha (idade, peso, alergias)
-    - Expande histórico com botão "Ver completo"
-    - Botões ação: "Agendar consulta", "Editar prontuário", "Gerar receita"
+  - FRED busca pet "Rex" → mostra mini-ficha (idade, peso, alergias)
+  - Expande histórico com botão "Ver completo"
+  - Botões ação: "Agendar consulta", "Editar prontuário", "Gerar receita"
 - "Pacientes da Dra. Maria hoje"
-    - Lista agenda de hoje da Dra. Maria
-    - Cada item clicável → abre detalhes consulta
+  - Lista agenda de hoje da Dra. Maria
+  - Cada item clicável → abre detalhes consulta
 
 **D. Botões Inteligentes (Quick Actions)**
 
@@ -408,14 +388,12 @@ Veterinários gastam 40-60 minutos/dia preenchendo prontuários manualmente, des
 - "Enviar lembrete" (SMS/email tutor)
 - "Editar prontuário" (abre editor)
 
-
 #### 3.6.3 Gerenciamento Contexto \& Delírios
 
 - **Context Window:** Mantém últimas 10 mensagens (evita token bloat)
 - **Grounding:** Todas queries FRED buscam em DB primeiro (não alucinações)
 - **Validação:** Se não encontra dado em DB → responde "Desculpe, não encontrei. Quer que eu [ação específica]?"
 - **Logs:** Todas interações FRED logadas para auditoria
-
 
 #### 3.6.4 Notificações FRED
 
@@ -431,11 +409,10 @@ Veterinários gastam 40-60 minutos/dia preenchendo prontuários manualmente, des
 #### 3.7.1 Upload Áudio Consulta
 
 - **Opções:**
-    - Gravar áudio direto (Fase 2: microfone no navegador)
-    - Upload arquivo (.mp3, .wav, .m4a, .ogg, .webm - qualquer formato celular)
+  - Gravar áudio direto (Fase 2: microfone no navegador)
+  - Upload arquivo (.mp3, .wav, .m4a, .ogg, .webm - qualquer formato celular)
 - **Limite:** 50MB, máximo 60 minutos
 - **Processamento:** Assincron (notifica quando pronto, ~2-5min para 60min áudio)
-
 
 #### 3.7.2 Transcrição (Whisper API)
 
@@ -444,7 +421,6 @@ Veterinários gastam 40-60 minutos/dia preenchendo prontuários manualmente, des
 - **Precisão:** 95%+ (Whisper modelo large)
 - **Fallback:** Se erro → salva áudio, notifica admin, deixa para retry manual
 - **Retry:** Pode tentar novamente upload mesmo áudio ou arquivo diferente
-
 
 #### 3.7.3 Geração Prontuário (GPT-4o)
 
@@ -468,15 +444,14 @@ Veterinários gastam 40-60 minutos/dia preenchendo prontuários manualmente, des
 #### 3.7.4 Editor Prontuário
 
 - **Veterinário confirma:** Clica em cada campo
-    - ✅ Correto → marca checado
-    - ❌ Incorreto → edita manualmente
-    - ❌ Não aplicável → remove campo
+  - ✅ Correto → marca checado
+  - ❌ Incorreto → edita manualmente
+  - ❌ Não aplicável → remove campo
 - **Validações:**
-    - Mínimo 1 campo preenchido
-    - Diagnóstico obrigatório
-    - Se exame solicitado → data retorno obrigatória
+  - Mínimo 1 campo preenchido
+  - Diagnóstico obrigatório
+  - Se exame solicitado → data retorno obrigatória
 - **Assinatura:** Veterinário assina digitalmente (data + nome + CRM)
-
 
 #### 3.7.5 Salvar \& Armazenamento
 
@@ -494,7 +469,6 @@ Veterinários gastam 40-60 minutos/dia preenchendo prontuários manualmente, des
 - **Controlada:** Antibióticos, anti-inflamatórios (mesma estrutura + aviso legal)
 - **Especial:** Controlados Portaria 344 ANVISA (com campos extras: nº receita, CRM veterinário)
 - **Atestado:** Cirurgias, viagens (campos: procedimento, data, repouso dias)
-
 
 #### 3.8.2 Fluxo Geração
 
@@ -523,94 +497,27 @@ Veterinários gastam 40-60 minutos/dia preenchendo prontuários manualmente, des
 
 ***
 
-### 3.9 Farejador de Mercado (Inteligência Concorrentes)
+### 3.9 Teleconsulta (Novo Foco)
 
-#### 3.9.1 Onboarding Farejador
+#### 3.9.1 Sala de Atendimento Virtual
 
-**Primeira vez acesso:**
+- **Integração:** Link para videochamada (Jitsi/Meet/Zoom ou nativo WebRTC).
+- **Interface:** Tela dividida (Vídeo + Prontuário).
+- **Acesso:**
+  - Veterinário: Abre direto pelo dashboard.
+  - Tutor: Recebe link único via WhatsApp/Email.
 
-1. **Tela 1: "Vamos localizar sua clínica"**
-    - Input: Nome da clínica/médico
-    - Input: Cidade
-    - Input: Bairro
-    - Botão: "Confirmar localização"
-2. **Tela 2: Confirmação**
-    - Mostra resultado Google Maps (foto, endereço, nota)
-    - "É este lugar?" → Sim/Não
-    - Se Não → volta para Tela 1 com sugestão próxima
-    - Se Sim → FRED busca concorrentes próximos (até 5km raio)
-3. **Tela 3: Seu Perfil + Mercado**
-    - Card você (nome, endereço, nota Google, foto, links redes)
-    - Seção: "Concorrentes próximos" (até 5, ordenados distância)
-    - Cada card concorrente: Nome, endereço, nota, links (clicáveis)
+#### 3.9.2 Fluxo Teleconsulta
 
-#### 3.9.2 Coleta Dados Concorrentes
-
-**Por concorrente, coleta:**
-
-- ✅ Nome da clínica
-- ✅ Endereço (com geocoding para distância)
-- ✅ Telefone(s)
-- ✅ Site (se houver)
-- ✅ Instagram (handle + número followers)
-- ✅ Facebook (nome página + número likes)
-- ✅ LinkedIn (URL perfil empresa)
-- ✅ Google (URL Google Maps + nota média + total reviews)
-- ✅ Horário funcionamento (if encontrado)
-- ✅ Serviços listados (if encontrado)
-- ✅ Preços (if público em site/redes)
-- ✅ Foto perfil/capa (thumbnail armazenado)
-
-**Fonte:** Google Gemini Grounding Search (acessa web públicos em tempo real)
-
-#### 3.9.3 Jornal do Fred (CRON Diário)
-
-**CRON executado:** 06:00 AM daily (horário clínica)
-
-**Relatório inclui:**
-
-**Seção 1: Seu Negócio**
-
-- Resumo: "Você está em [bairro], com [nota] nota no Google"
-- Status: "[X] clientes novos agendaram", "[Y] consultas completas"
-
-**Seção 2: Novidades Mercado Local**
-
-- "3 novas clínicas registradas no seu raio de 5km nos últimos 7 dias"
-- "2 concorrentes subiram avaliação (+0.3 pontos)"
-- "Clínica X ficou trending em Instagram (1.2k likes último post)"
-
-**Seção 3: Insights Concorrentes (Top 3 Monitorados)**
-Per concorrente:
-
-- "Concorrente A: Último post Instagram 2 dias atrás (60 likes, 12 comentários)"
-- "Concorrente B: Nota Google mudou de 4.5 → 4.6 (novo review: '5⭐ Excelente atendimento')"
-- "Concorrente C: Website atualizado - agora oferece telemedicina"
-
-**Seção 4: Oportunidades \& Ações Sugeridas**
-
-- "3 clientes deixaram review negativo para Concorrente X - considere campanha de vacinas"
-- "Nenhum concorrente próximo oferece serviço [X] - oportunidade de diferenciação"
-- "Sua nota Google está 0.2 pontos abaixo da média da região - solicite reviews"
-
-**Formato:** Email formatado + disponível no dashboard FRED (abrir qualquer momento)
-
-#### 3.9.4 Monitoramento Customizado
-
-**Usuário pode:**
-
-- Adicionar concorrentes específicos (não só próximos)
-- Adicionar redes sociais não detectadas (Instagram, LinkedIn extras)
-- Selecionar concorrentes para "monitoramento intensivo" (notificação imediata se mudança)
-- Notas privadas por concorrente (ex: "Seu maior rival", "Referência boas práticas")
-
-**Dashboard:**
-
-- Lista todos concorrentes monitorados
-- Última atualização
-- Últimas 5 novidades
-- Gráfico evolução nota Google (30 dias)
-- Comparativo: Sua nota vs média concorrentes
+1. **Agendamento:** Criar consulta com tipo "Teleconsulta".
+2. **Notificação:** Envia link da sala para o tutor automaticamente.
+3. **Durante:**
+    - Veterinário visualiza vídeo do pet.
+    - Preenche prontuário em tempo real (ou grava para transcrição).
+    - Chat de texto para envio de anexos/receitas.
+4. **Finalização:**
+    - Encerra vídeo.
+    - Gera receita digital e envia para o tutor.
 
 ***
 
@@ -633,14 +540,12 @@ Per concorrente:
 - Database indexes (PostgreSQL composite indexes)
 - API response time: <200ms (p95)
 
-
 ### 4.2 Escalabilidade
 
 - **Suportar:** 100+ clientes, 1.000+ consultas/dia no MVP
 - **Database:** PostgreSQL com connection pooling (max 50 connections)
 - **Storage:** MinIO escalável (adicionar nodes se necessário)
 - **API:** Next.js pode escalar horizontalmente (múltiplas instâncias via Coolify load balancer)
-
 
 ### 4.3 Disponibilidade \& Uptime
 
@@ -649,7 +554,6 @@ Per concorrente:
 - **Alertas:** Email/Telegram se downtime > 5 minutos
 - **Backup:** Diário (PostgreSQL + MinIO) → Backblaze B2
 - **Restore:** Testado mensalmente (documentado)
-
 
 ### 4.4 Segurança
 
@@ -661,20 +565,17 @@ Per concorrente:
 - **RBAC:** 3 roles (Admin, Vet, Atendente) com permissions granulares
 - **2FA:** Opcional (Fase 2) - TOTP app
 
-
 #### 4.4.2 Dados em Trânsito
 
 - **HTTPS:** Obrigatório (Let's Encrypt via Coolify)
 - **TLS:** 1.2+ (cipher suites fortes)
 - **HSTS:** Max-age 31536000s (1 ano)
 
-
 #### 4.4.3 Dados em Repouso
 
 - **Database:** PostgreSQL encryption at rest (dm-crypt VPS)
 - **Files:** MinIO encryption (s3-encryption headers)
 - **Secrets:** Environment variables (não hardcoded, .env.local não commitado)
-
 
 #### 4.4.4 CSRF \& XSS Protection
 
@@ -683,13 +584,11 @@ Per concorrente:
 - **Input validation:** Zod schemas em todas API routes
 - **Output encoding:** React escape automático, innerHTML evitado
 
-
 #### 4.4.5 Rate Limiting
 
 - **Nginx:** 100 req/min por IP (brute-force protection login)
 - **API:** 1.000 req/hora por user (por token JWT)
 - **Whisper/GPT-4o:** Quotas por plan (50/mês starter, 200 pro, ilimitado enterprise)
-
 
 #### 4.4.6 Logs \& Auditoria
 
@@ -697,7 +596,6 @@ Per concorrente:
 - **Logs prontuário:** Quem visualizou/editou, quando, o quê
 - **Retenção:** 90 dias em database, 1 ano offsite
 - **Acesso logs:** Apenas admin + auditador designado (Fase 2)
-
 
 #### 4.4.7 LGPD Compliance
 
@@ -708,18 +606,16 @@ Per concorrente:
 - **Portabilidade:** Exportar JSON dados usuário (Fase 2)
 - **Notificação breach:** Plano resposta se vazamento (processo documentado)
 
-
 ### 4.5 Conformidade \& Regulação
 
 #### 4.5.1 Prontuários Veterinários
 
 - **Legislação:** CFMV (Conselho Federal Medicina Veterinária)
 - **Requisitos:**
-    - Identificação veterinário responsável (CRM obrigatório)
-    - Assinatura digital (data + nome + CRM)
-    - Inalterabilidade histórico (não apagar, apenas adicionar)
-    - Retenção mínima: 5 anos (após última consulta)
-
+  - Identificação veterinário responsável (CRM obrigatório)
+  - Assinatura digital (data + nome + CRM)
+  - Inalterabilidade histórico (não apagar, apenas adicionar)
+  - Retenção mínima: 5 anos (após última consulta)
 
 #### 4.5.2 Prescrições (Receitas)
 
@@ -727,13 +623,11 @@ Per concorrente:
 - **Medicamentos controlados:** Campos extras (CRM vet, nº receita sequencial)
 - **Armazenamento:** Permanente (sujeito regulação)
 
-
 #### 4.5.3 Dados Pessoais Tutor
 
 - **Proteção:** LGPD compliance (acima)
 - **Acesso:** Tutor acessa dados própios e pets
 - **Retenção:** 2 anos após última interação (depois anonimiza)
-
 
 ### 4.6 Acessibilidade (WCAG 2.1 AA)
 
@@ -749,7 +643,6 @@ Per concorrente:
 - **Semantic HTML:** Heading hierarchy (h1→h2→h3), `<main>`, `<nav>`
 ```
 
-
 #### 4.6.2 Forms
 
 - **Erros:** Mensagens claras, campo destacado
@@ -757,13 +650,11 @@ Per concorrente:
 - **Placeholder:** Apenas exemplo (não remove label)
 - **Required:** Asterisco + aria-required
 
-
 #### 4.6.3 Modais \& Popups
 
 - **Focus trap:** Foco confinado dentro modal (até fechar)
 - **Escape fecha:** ESC key funciona
 - **Close button:** "X" + "Fechar" texto, acessível
-
 
 #### 4.6.4 Testing
 
@@ -788,19 +679,17 @@ Per concorrente:
 --gradient-blue: linear-gradient(135deg, #00bcd4 0%, #4dd0e1 100%);
 ```
 
-
 ### 5.2 Tipografia
 
 - **Heading:** Space Grotesk (web font) / fallback Poppins
 - **Body:** Inter (web font)
 - **Mono:** JetBrains Mono ou Fira Code
 - **Sizes:**
-    - H1: 3.2rem (bold 800)
-    - H2: 2.4rem (bold 700)
-    - H3: 1.8rem (bold 700)
-    - Body: 1rem (normal 400)
-    - Small: 0.875rem (normal 400)
-
+  - H1: 3.2rem (bold 800)
+  - H2: 2.4rem (bold 700)
+  - H3: 1.8rem (bold 700)
+  - Body: 1rem (normal 400)
+  - Small: 0.875rem (normal 400)
 
 ### 5.3 Componentes Principais
 
@@ -813,7 +702,6 @@ Per concorrente:
 - Focus: Outline 3px primary-blue
 - Font: 1rem, bold 600
 
-
 #### CTA Botão Secundário
 
 - Border: 2px solid primary-blue
@@ -821,7 +709,6 @@ Per concorrente:
 - Color: primary-blue
 - Hover: Background primary-blue, color white
 - Focus: Outline 3px rgba(0,188,212,0.5)
-
 
 #### Card Serviço/Informação
 
@@ -831,7 +718,6 @@ Per concorrente:
 - Border-radius: 8px
 - Hover: Transform translateY(-4px), shadow-lg
 
-
 #### Input Form
 
 - Border: 1px solid rgba(0,0,0,0.2)
@@ -840,7 +726,6 @@ Per concorrente:
 - Font: 1rem
 - Focus: Border primary-blue, box-shadow 0 0 0 3px rgba(0,188,212,0.2)
 
-
 #### Badge/Tag
 
 - Background: rgba(0,188,212,0.15)
@@ -848,7 +733,6 @@ Per concorrente:
 - Padding: 4px 8px
 - Border-radius: 12px
 - Font-size: 0.85rem
-
 
 ### 5.4 Layout \& Spacing
 
@@ -880,7 +764,6 @@ Per concorrente:
 - [ ] Validação: Pet + data/hora + vet obrigatórios
 - [ ] Erro se conflito horário (vet já tem outro evento) → aviso claro
 
-
 #### US1.2: Cancelar Consulta com Justificativa
 
 **Como** atendente/vet, **quero** cancelar consulta informando motivo, **para** que tutor saiba por quê.
@@ -897,7 +780,6 @@ Per concorrente:
 - [ ] Admin pode ver histórico cancelamentos + motivos (relatório futuro)
 - [ ] Validação: Motivo preenchido obrigatoriamente
 
-
 #### US1.3: Visualizar Agenda Dia/Semana/Mês
 
 **Como** veterinário, **quero** visualizar agenda em múltiplas visualizações, **para** planejar dia.
@@ -913,7 +795,6 @@ Per concorrente:
 - [ ] Hoje destacado (background, border, etc)
 - [ ] Navegação próx/prev mês/semana/dia
 - [ ] Mobile: View dia padrão (semana/mês scrollável horizontalmente)
-
 
 #### US1.4: Lembretes Automáticos
 
@@ -950,7 +831,6 @@ Per concorrente:
 - [ ] Se erro: "Falha ao transcrever. Tente novamente" + botão retry
 - [ ] Audio armazenado MinIO (path: `audios/{clinica_id}/{consulta_id}/original.mp3`)
 
-
 #### US2.2: Geração Prontuário
 
 **Como** veterinário, **quero** que prontuário seja gerado automaticamente da transcrição, **para** economizar tempo.
@@ -966,7 +846,6 @@ Per concorrente:
 - [ ] Se remover → campo some do formulário final
 - [ ] Diagnóstico obrigatório (validação)
 
-
 #### US2.3: Editor \& Confirmação Prontuário
 
 **Como** veterinário, **quero** revisar/editar prontuário IA antes salvar, **para** garantir acurácia.
@@ -981,7 +860,6 @@ Per concorrente:
 - [ ] Assinatura: Data + Nome + CRM (auto-preenchido do usuário)
 - [ ] Botões: "Salvar", "Descartar", "Salvar + Gerar Receita"
 - [ ] Após salvar: Redireciona histórico pet, mostra notification "Prontuário salvo"
-
 
 #### US2.4: Histórico Prontuários
 
@@ -1016,7 +894,6 @@ Per concorrente:
 - [ ] Sempre disponível (exceto logout)
 - [ ] Status "Online" + ícone verde
 
-
 #### US3.2: Busca Natural Pacientes
 
 **Como** veterinário, **quero** buscar pacientes por nome naturalmente, **para** acessar rápido.
@@ -1031,7 +908,6 @@ Per concorrente:
 - [ ] Botões rápidos: "Ver histórico completo", "Agendar consulta", "Editar"
 - [ ] Se não encontra: "Desculpe, não encontrei '[termo]'. Quer agendar novo pet?"
 
-
 #### US3.3: Lembretes Proativos FRED
 
 **Como** veterinário, **quero** receber lembretes FRED automáticos, **para** não esquecer próximos eventos.
@@ -1044,7 +920,6 @@ Per concorrente:
 - [ ] Notificação clicável → abre página consulta
 - [ ] Badge vermelho em ícone FRED se notificação pendente
 - [ ] Sound notification (silenciável em settings)
-
 
 #### US3.4: Histórico Conversa FRED
 
@@ -1079,7 +954,6 @@ Per concorrente:
 - [ ] Salva seleção em DB (user_id, location, monitored_competitors)
 - [ ] Após onboarding → dashboard farejador
 
-
 #### US4.2: Jornal do Fred Diário
 
 **Como** admin, **quero** ler relatório diário de mercado, **para** tomar decisões estratégicas.
@@ -1095,7 +969,6 @@ Per concorrente:
 - [ ] Leitura: Data, resumo, expandir seções
 - [ ] Não há atualização em tempo real (apenas diário)
 
-
 #### US4.3: Monitoramento Customizado
 
 **Como** admin, **quero** adicionar concorrentes específicos, **para** monitorar mais perto.
@@ -1110,7 +983,6 @@ Per concorrente:
 - [ ] Cada card: Nome, nota atual, última atualização, botão "Remover"
 - [ ] Botão "Monitorar intensamente" → notificação imediata se mudança nota/posts
 - [ ] Campo notas privadas (memo por concorrente)
-
 
 #### US4.4: Gráfico Evolução Notas
 
@@ -1504,7 +1376,6 @@ model Subscription {
 }
 ```
 
-
 ***
 
 ## 8. API Endpoints (MVP)
@@ -1520,7 +1391,6 @@ POST /api/auth/forgot-password
 POST /api/auth/reset-password
 ```
 
-
 ### Consultations
 
 ```
@@ -1531,7 +1401,6 @@ PUT /api/consultations/:id       # Update
 POST /api/consultations/:id/cancel # Cancel with reason
 ```
 
-
 ### Medical Records
 
 ```
@@ -1541,7 +1410,6 @@ PUT /api/medical-records/:id     # Update
 GET /api/medical-records/pet/:petId # List by pet
 ```
 
-
 ### Audio Transcription
 
 ```
@@ -1550,7 +1418,6 @@ POST /api/transcription/generate # Trigger Whisper
 GET /api/transcription/:id       # Get transcription
 ```
 
-
 ### FRED Chat
 
 ```
@@ -1558,7 +1425,6 @@ POST /api/fredar/chat            # Send message
 GET /api/fredar/search-patient   # Search patients
 POST /api/fredar/set-reminder    # Create reminder
 ```
-
 
 ### Farejador
 
@@ -1570,7 +1436,6 @@ DELETE /api/fredar/competitors/:id # Remove
 GET /api/fredar/journal/latest   # Get latest journal
 GET /api/fredar/journal/:date    # Get journal by date
 ```
-
 
 ***
 
@@ -1755,7 +1620,6 @@ SENTRY_DSN="https://..."
 # Coolify
 COOLIFY_API_TOKEN="..."
 ```
-
 
 ***
 

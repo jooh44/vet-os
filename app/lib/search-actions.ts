@@ -1,16 +1,26 @@
 'use server';
 
 import prisma from '@/lib/prisma';
+import { auth } from '@/auth';
 
 export async function searchTutors(query: string) {
     if (!query || query.length < 2) return [];
 
+    const session = await auth();
+    const userId = session?.user?.id;
+    if (!userId) return [];
+
     try {
         const tutors = await prisma.tutor.findMany({
             where: {
-                OR: [
-                    { user: { name: { contains: query, mode: 'insensitive' } } },
-                    { cpf: { contains: query } }
+                AND: [
+                    {
+                        OR: [
+                            { user: { name: { contains: query, mode: 'insensitive' } } },
+                            { cpf: { contains: query } }
+                        ]
+                    },
+                    { createdByVetId: userId } as any // Strict Isolation
                 ]
             },
             include: { user: { select: { name: true, email: true } } },
@@ -32,10 +42,15 @@ export async function searchTutors(query: string) {
 export async function searchPets(query: string) {
     if (!query || query.length < 2) return [];
 
+    const session = await auth();
+    const userId = session?.user?.id;
+    if (!userId) return [];
+
     try {
         const pets = await prisma.pet.findMany({
             where: {
-                name: { contains: query, mode: 'insensitive' }
+                name: { contains: query, mode: 'insensitive' },
+                tutor: { createdByVetId: userId } as any // Strict Isolation
             },
             include: {
                 tutor: {
