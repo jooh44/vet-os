@@ -5,28 +5,12 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { File } from 'node:buffer';
+import { generateText } from 'ai';
+import { google } from '@ai-sdk/google';
 import ffmpeg from 'fluent-ffmpeg';
-import ffmpegPath from 'ffmpeg-static';
 
-// Configure ffmpeg
-// Fix for Next.js Webpack bundling issue with ffmpeg-static
-let ffmpegBinary = ffmpegPath;
-
-// In development/Next.js, the path might be rewritten to inside .next, which is wrong.
-// We force a check against local node_modules.
-const localFfmpeg = path.join(process.cwd(), 'node_modules', 'ffmpeg-static', 'ffmpeg');
-
-if (fs.existsSync(localFfmpeg)) {
-    ffmpegBinary = localFfmpeg;
-} else if (!ffmpegBinary || !fs.existsSync(ffmpegBinary)) {
-    // Fallback: try to find it in likely locations
-    console.warn("Could not find ffmpeg in standard locations.");
-}
-
-if (ffmpegBinary) {
-    ffmpeg.setFfmpegPath(ffmpegBinary);
-    console.log(`FFmpeg Path explicitly set to: ${ffmpegBinary}`);
-}
+// Use system ffmpeg (installed via apk)
+ffmpeg.setFfmpegPath('ffmpeg');
 
 // @ts-ignore
 if (typeof globalThis.File === 'undefined') {
