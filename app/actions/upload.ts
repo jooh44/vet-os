@@ -1,9 +1,8 @@
 'use server';
 
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
+import { uploadFile } from '@/lib/storage';
 
 export async function uploadPetPhoto(petId: string, formData: FormData) {
     try {
@@ -17,41 +16,29 @@ export async function uploadPetPhoto(petId: string, formData: FormData) {
             return { success: false, error: 'File must be an image' };
         }
 
-        // Validate file size (max 5MB)
+        // Validate file size (max 5MB - Supabase bucket limit)
         if (file.size > 5 * 1024 * 1024) {
             return { success: false, error: 'File size must be less than 5MB' };
         }
 
-        const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
+        console.log('[uploadPetPhoto] Uploading file to Supabase:', file.name, file.type, file.size);
 
-        // Ensure uploads directory exists
-        const uploadDir = join(process.cwd(), 'public', 'uploads');
-        try {
-            await mkdir(uploadDir, { recursive: true });
-        } catch (error) {
-            // Ignore error if directory already exists
-        }
+        // Upload to Supabase Storage
+        const photoUrl = await uploadFile(file, 'pets');
 
-        // Create unique filename
-        const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '')}`;
-        const filepath = join(uploadDir, filename);
-
-        // Write file to disk
-        await writeFile(filepath, buffer);
+        console.log('[uploadPetPhoto] Upload successful:', photoUrl);
 
         // Update database
-        const publicPath = `/uploads/${filename}`;
         await prisma.pet.update({
             where: { id: petId },
-            data: { photoUrl: publicPath }
+            data: { photoUrl }
         });
 
         revalidatePath(`/dashboard/pets/${petId}`);
-        return { success: true, photoUrl: publicPath };
+        return { success: true, photoUrl };
 
     } catch (error) {
-        console.error('Error uploading photo:', error);
-        return { success: false, error: 'Failed to upload photo' };
+        console.error('[uploadPetPhoto] Error:', error);
+        return { success: false, error: error instanceof Error ? error.message : 'Failed to upload photo' };
     }
 }
