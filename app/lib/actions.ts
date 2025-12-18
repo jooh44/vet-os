@@ -60,6 +60,8 @@ export async function createTutor(prevState: any, formData: FormData) {
         return { message: 'Erro: Usuário não autenticado.' };
     }
 
+    const userId = session!.user!.id!;
+
     try {
         await prisma.$transaction(async (tx: any) => {
             const user = await tx.user.create({
@@ -77,7 +79,7 @@ export async function createTutor(prevState: any, formData: FormData) {
                     phone,
                     address,
                     userId: user.id,
-                    createdByVetId: session.user.id as any // Strict Isolation - Cast to any to bypass potential type mismatch during codegen lagg // Private Practice Link
+                    createdByVetId: userId
                 }
             });
         });
@@ -142,10 +144,9 @@ export async function createPet(tutorIdArg: string | null | undefined, prevState
             message: `Erro ao salvar pet: ${error instanceof Error ? error.message : String(error)}`,
         };
     }
-}
 
-revalidatePath('/dashboard/tutors');
-redirect('/dashboard/tutors'); // Or redirect to tutor profile
+    revalidatePath('/dashboard/tutors');
+    redirect('/dashboard/tutors'); // Or redirect to tutor profile
 }
 
 // MEDICAL RECORDS

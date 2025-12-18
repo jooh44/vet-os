@@ -4,9 +4,9 @@ const prisma = new PrismaClient();
 
 async function debugDelete() {
     try {
-        console.log("Searching for 'Johny Oliveira'...");
+        console.log("Searching for 'Kira'...");
         const pet = await prisma.pet.findFirst({
-            where: { name: "Johny Oliveira" }
+            where: { name: "Kira" }
         });
 
         if (!pet) {

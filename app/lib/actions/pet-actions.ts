@@ -121,6 +121,6 @@ export async function deletePet(id: string) {
         return { success: true };
     } catch (error) {
         console.error('Failed to delete pet:', error);
-        return { success: false, message: 'Falha ao excluir pet.' };
+        return { success: false, message: `Falha ao excluir pet: ${error instanceof Error ? error.message : String(error)}` };
     }
 }
