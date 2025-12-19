@@ -9,8 +9,12 @@ import { auth } from "@/auth"
 
 export default async function DashboardPage() {
     const session = await auth()
-    const userName = session?.user?.name || "Doutor"
-    const formattedName = userName.startsWith("Dr.") || userName.startsWith("Dra.")
+    const userRole = (session?.user as any)?.role
+    const isTutor = userRole === 'TUTOR'
+
+    const userName = session?.user?.name || (isTutor ? "Tutor" : "Doutor")
+
+    const formattedName = (isTutor || userName.startsWith("Dr.") || userName.startsWith("Dra."))
         ? userName
         : `Dr. ${userName}`
 
