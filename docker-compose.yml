@@ -14,8 +14,9 @@ services:
       - "host.docker.internal:host-gateway"
     environment:
       NODE_ENV: production
-      # Connect to host-based db-proxy on port 5430
-      DATABASE_URL: 'postgresql://postgres:RsnjJzER79WF8mAe@host.docker.internal:5430/postgres'
+      # Supabase Session Mode Pooler (IPv4 compatible per docs)
+      # Format: postgres://postgres.[PROJECT_REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres
+      DATABASE_URL: 'postgresql://postgres.rhxticpmcdzbmnfblkuk:RsnjJzER79WF8mAe@aws-0-us-east-1.pooler.supabase.com:5432/postgres'
       AUTH_SECRET: '${AUTH_SECRET}'
       AUTH_TRUST_HOST: 'true'
       NEXTAUTH_URL: '${NEXTAUTH_URL}'
