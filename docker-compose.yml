@@ -1,16 +1,7 @@
 # VetOS Production Docker Compose for Coolify
-# Includes db-proxy to handle IPv6-only Supabase connection
+# Uses external db-proxy running on host network for IPv6 Supabase access
 
 services:
-  # IPv6 Proxy - forwards IPv4 to Supabase IPv6 endpoint
-  db-proxy:
-    image: alpine/socat:latest
-    container_name: db-proxy
-    command: TCP4-LISTEN:5432,fork,reuseaddr TCP6:db.rhxticpmcdzbmnfblkuk.supabase.co:5432
-    restart: unless-stopped
-    networks:
-      - default
-
   # Main Application
   app:
     build:
@@ -19,10 +10,12 @@ services:
       args:
         NEXT_PUBLIC_SUPABASE_URL: '${NEXT_PUBLIC_SUPABASE_URL}'
         NEXT_PUBLIC_SUPABASE_ANON_KEY: '${NEXT_PUBLIC_SUPABASE_ANON_KEY}'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       NODE_ENV: production
-      # Connect to db-proxy instead of direct Supabase URL
-      DATABASE_URL: 'postgresql://postgres:RsnjJzER79WF8mAe@db-proxy:5432/postgres'
+      # Connect to host-based db-proxy on port 5430
+      DATABASE_URL: 'postgresql://postgres:RsnjJzER79WF8mAe@host.docker.internal:5430/postgres'
       AUTH_SECRET: '${AUTH_SECRET}'
       AUTH_TRUST_HOST: 'true'
       NEXTAUTH_URL: '${NEXTAUTH_URL}'
@@ -30,8 +23,6 @@ services:
       NEXT_PUBLIC_SUPABASE_ANON_KEY: '${NEXT_PUBLIC_SUPABASE_ANON_KEY}'
       SUPABASE_SERVICE_ROLE_KEY: '${SUPABASE_SERVICE_ROLE_KEY}'
       OPENAI_API_KEY: '${OPENAI_API_KEY}'
-    depends_on:
-      - db-proxy
     healthcheck:
       test:
         - CMD
@@ -45,8 +36,3 @@ services:
       retries: 3
       start_period: 60s
     restart: unless-stopped
-
-networks:
-  default:
-    name: coolify
-    external: true
