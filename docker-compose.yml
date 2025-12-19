@@ -22,7 +22,7 @@ services:
     environment:
       NODE_ENV: production
       # Connect to db-proxy instead of direct Supabase URL
-      DATABASE_URL: 'postgresql://postgres:${DB_PASSWORD}@db-proxy:5432/postgres'
+      DATABASE_URL: 'postgresql://postgres:RsnjJzER79WF8mAe@db-proxy:5432/postgres'
       AUTH_SECRET: '${AUTH_SECRET}'
       AUTH_TRUST_HOST: 'true'
       NEXTAUTH_URL: '${NEXTAUTH_URL}'
