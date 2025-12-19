@@ -22,7 +22,7 @@ services:
         - '--no-verbose'
         - '--tries=1'
         - '--spider'
-        - 'http://localhost:3000/api/auth/session'
+        - 'http://127.0.0.1:3000/api/auth/session'
       interval: 30s
       timeout: 10s
       retries: 3
