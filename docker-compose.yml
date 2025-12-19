@@ -16,7 +16,7 @@ services:
       NODE_ENV: production
       # Supabase Session Mode Pooler (IPv4 compatible per docs)
       # Format: postgres://postgres.[PROJECT_REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres
-      DATABASE_URL: 'postgresql://postgres.rhxticpmcdzbmnfblkuk:RsnjJzER79WF8mAe@aws-0-us-east-1.pooler.supabase.com:5432/postgres'
+      DATABASE_URL: '${DATABASE_URL}'
       AUTH_SECRET: '${AUTH_SECRET}'
       AUTH_TRUST_HOST: 'true'
       NEXTAUTH_URL: '${NEXTAUTH_URL}'
