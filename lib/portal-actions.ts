@@ -112,30 +112,29 @@ export async function getInviteLink(tutorId: string) {
                     status: 'OPEN'
                 }
             });
-        });
-    }
+        }
 
         // Fix: If session exists but has no accessCode (migration/legacy), generate one.
         if (!sessionData.accessCode) {
-        // Re-fetch tutor to get name for code generation
-        const tutor = await prisma.tutor.findUnique({
-            where: { id: tutorId },
-            include: { user: true }
-        });
-        const code = `${(tutor?.user?.name || 'tutor').split(' ')[0].toLowerCase()}${Math.floor(Math.random() * 1000)}`;
+            // Re-fetch tutor to get name for code generation
+            const tutor = await prisma.tutor.findUnique({
+                where: { id: tutorId },
+                include: { user: true }
+            });
+            const code = `${(tutor?.user?.name || 'tutor').split(' ')[0].toLowerCase()}${Math.floor(Math.random() * 1000)}`;
 
-        sessionData = await prisma.chatSession.update({
-            where: { id: sessionData.id },
-            data: { accessCode: code }
-        });
+            sessionData = await prisma.chatSession.update({
+                where: { id: sessionData.id },
+                data: { accessCode: code }
+            });
+        }
+
+        const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://app.digitaldog.pet';
+        return `${baseUrl}/invite/${sessionData.accessCode}`;
+    } catch (error) {
+        console.error('Error generating invite link:', error);
+        return null;
     }
-
-    const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://app.digitaldog.pet';
-    return `${baseUrl}/invite/${sessionData.accessCode}`;
-} catch (error) {
-    console.error('Error generating invite link:', error);
-    return null;
-}
 }
 
 export async function getInviteDetails(accessCode: string) {
