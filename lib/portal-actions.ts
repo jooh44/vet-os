@@ -114,7 +114,8 @@ export async function getInviteLink(tutorId: string) {
             });
         }
 
-        return `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/invite/${sessionData.accessCode}`;
+        const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://app.digitaldog.pet';
+        return `${baseUrl}/invite/${sessionData.accessCode}`;
     } catch (error) {
         console.error('Error generating invite link:', error);
         return null;
