@@ -1,7 +1,17 @@
-# VetOS Production Docker Compose
-# For use with Coolify - includes coolify network for Traefik routing
+# VetOS Production Docker Compose for Coolify
+# Includes db-proxy to handle IPv6-only Supabase connection
 
 services:
+  # IPv6 Proxy - forwards IPv4 to Supabase IPv6 endpoint
+  db-proxy:
+    image: alpine/socat:latest
+    container_name: db-proxy
+    command: TCP4-LISTEN:5432,fork,reuseaddr TCP6:db.rhxticpmcdzbmnfblkuk.supabase.co:5432
+    restart: unless-stopped
+    networks:
+      - default
+
+  # Main Application
   app:
     build:
       context: .
@@ -11,7 +21,8 @@ services:
         NEXT_PUBLIC_SUPABASE_ANON_KEY: '${NEXT_PUBLIC_SUPABASE_ANON_KEY}'
     environment:
       NODE_ENV: production
-      DATABASE_URL: '${DATABASE_URL}'
+      # Connect to db-proxy instead of direct Supabase URL
+      DATABASE_URL: 'postgresql://postgres:${DB_PASSWORD}@db-proxy:5432/postgres'
       AUTH_SECRET: '${AUTH_SECRET}'
       AUTH_TRUST_HOST: 'true'
       NEXTAUTH_URL: '${NEXTAUTH_URL}'
@@ -19,6 +30,8 @@ services:
       NEXT_PUBLIC_SUPABASE_ANON_KEY: '${NEXT_PUBLIC_SUPABASE_ANON_KEY}'
       SUPABASE_SERVICE_ROLE_KEY: '${SUPABASE_SERVICE_ROLE_KEY}'
       OPENAI_API_KEY: '${OPENAI_API_KEY}'
+    depends_on:
+      - db-proxy
     healthcheck:
       test:
         - CMD
@@ -32,9 +45,8 @@ services:
       retries: 3
       start_period: 60s
     restart: unless-stopped
-    # NOTE: Do NOT add traefik labels here - Coolify manages routing automatically
-    # Adding custom labels causes conflicts with Coolify-generated labels
-    env_file:
-      - .env
 
-# Networks are managed by Coolify - do not define here
+networks:
+  default:
+    name: coolify
+    external: true
