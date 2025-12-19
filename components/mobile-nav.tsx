@@ -11,6 +11,7 @@ export function MobileNav() {
         { name: 'Início', href: '/dashboard', icon: Home },
         { name: 'Agenda', href: '/dashboard/agenda', icon: Calendar },
         { name: 'Pacientes', href: '/dashboard/patients', icon: Users },
+        { name: 'Tutores', href: '/dashboard/tutors', icon: Users },
         { name: 'Chat', href: '/dashboard/chat', icon: MessageCircle },
         { name: 'Consulta', href: '/dashboard/consultation', icon: Sparkles, highlight: true },
         // Placeholder links for tools that we are about to build

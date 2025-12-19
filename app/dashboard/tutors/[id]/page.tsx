@@ -80,11 +80,11 @@ export default async function TutorDetailsPage({ params }: { params: { id: strin
                     <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <span className="text-sm text-muted-foreground">CPF</span>
-                            <p>{tutor.cpf}</p>
+                            <p className="break-all">{tutor.cpf}</p>
                         </div>
-                        <div>
+                        <div className="md:col-span-2">
                             <span className="text-sm text-muted-foreground">Endereço</span>
-                            <p>{tutor.address || "Não informado"}</p>
+                            <p className="break-words max-w-full">{tutor.address || "Não informado"}</p>
                         </div>
                         <div>
                             <span className="text-sm text-muted-foreground">Cadastrado em</span>
