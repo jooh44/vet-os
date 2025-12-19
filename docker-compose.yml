@@ -8,8 +8,8 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_SUPABASE_URL: '${NEXT_PUBLIC_SUPABASE_URL}'
-        NEXT_PUBLIC_SUPABASE_ANON_KEY: '${NEXT_PUBLIC_SUPABASE_ANON_KEY}'
+        NEXT_PUBLIC_SUPABASE_URL: 'https://rhxticpmcdzbmnfblkuk.supabase.co'
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJoeHRpY3BtY2R6Ym1uZmJsa3VrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4NDUzNDUsImV4cCI6MjA4MTQyMTM0NX0.kqTyaBsp-6A3jLWHTjI3n03TC-okKctkhw-3xTlNdSE'
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
