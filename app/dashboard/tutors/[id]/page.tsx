@@ -44,7 +44,7 @@ export default async function TutorDetailsPage({ params }: { params: { id: strin
                     <h1 className="text-4xl font-normal text-primary">{tutor.user.name}</h1>
                     <p className="text-muted-foreground">{tutor.user.email} • {tutor.phone}</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                     <EditTutorDialog tutor={tutor} />
                     <DeleteTutorButton
                         tutorId={tutor.id}
