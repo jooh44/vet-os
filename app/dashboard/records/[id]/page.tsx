@@ -1,6 +1,7 @@
 import prisma from '@/lib/prisma';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
@@ -49,23 +50,23 @@ export default async function RecordDetailPage({ params }: { params: { id: strin
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card className="md:col-span-2">
                     <CardHeader>
-                        <CardTitle>Detalhes do Atendimento</CardTitle>
+                        <CardTitle className="text-xl text-primary">Detalhes do Atendimento</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-6">
                         <div>
-                            <h3 className="font-semibold text-gray-700">Anamnese</h3>
+                            <h3 className="text-lg font-semibold text-primary border-b border-primary/20 pb-1 mb-2">Anamnese</h3>
                             <p className="text-gray-600 whitespace-pre-wrap">{record.anamnesis || 'Não registrado.'}</p>
                         </div>
                         <div>
-                            <h3 className="font-semibold text-gray-700">Exame Físico</h3>
+                            <h3 className="text-lg font-semibold text-primary border-b border-primary/20 pb-1 mb-2">Exame Físico</h3>
                             <p className="text-gray-600 whitespace-pre-wrap">{record.physicalExam || 'Não registrado.'}</p>
                         </div>
                         <div>
-                            <h3 className="font-semibold text-gray-700">Diagnóstico</h3>
+                            <h3 className="text-lg font-semibold text-primary border-b border-primary/20 pb-1 mb-2">Diagnóstico</h3>
                             <p className="text-gray-600 whitespace-pre-wrap">{record.diagnosis || 'Não registrado.'}</p>
                         </div>
                         <div>
-                            <h3 className="font-semibold text-gray-700">Prescrição</h3>
+                            <h3 className="text-lg font-semibold text-primary border-b border-primary/20 pb-1 mb-2">Prescrição</h3>
                             <p className="text-gray-600 whitespace-pre-wrap">{record.prescription || 'Não registrado.'}</p>
                         </div>
                     </CardContent>
@@ -74,15 +75,21 @@ export default async function RecordDetailPage({ params }: { params: { id: strin
                 <div className="space-y-6">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Paciente</CardTitle>
+                            <CardTitle className="text-primary">Paciente</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center text-xl font-bold text-gray-500">
-                                    {record.pet.name[0]}
-                                </div>
+                            <div className="flex items-center gap-4 mb-4">
+                                <Avatar className="h-14 w-14 border-2 border-primary/30">
+                                    {record.pet.photoUrl ? (
+                                        <AvatarImage src={record.pet.photoUrl} alt={record.pet.name} className="object-cover" />
+                                    ) : (
+                                        <AvatarFallback className="bg-primary/10 text-primary text-xl font-bold">
+                                            {record.pet.name[0]}
+                                        </AvatarFallback>
+                                    )}
+                                </Avatar>
                                 <div>
-                                    <p className="font-bold text-lg">{record.pet.name}</p>
+                                    <p className="font-bold text-lg text-primary">{record.pet.name}</p>
                                     <p className="text-sm text-muted-foreground">{record.pet.species} - {record.pet.breed}</p>
                                 </div>
                             </div>
