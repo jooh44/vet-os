@@ -59,13 +59,13 @@ export function generateMedicalRecordHTML(record: any) {
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&display=swap');
 
         :root {
-            /* DigitalDog Brand Colors */
-            --primary: #FF7043; /* Brand Orange */
-            --secondary: #131846; /* Navy Blue */
-            --accent: #EC407A; /* Pink */
+            /* VetOS Brand Colors (Matching App) */
+            --primary: #6B8E7F; /* Warm Sage Green */
+            --secondary: #D4A574; /* Warm Amber */
+            --accent: #4A7A6C; /* Darker Sage for contrast */
             
             --bg-light: #F8FAFC;
-            --text-dark: #131846;
+            --text-dark: #1e293b;
             --text-light: #64748B;
             --border: #E2E8F0;
         }
