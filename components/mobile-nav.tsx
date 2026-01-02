@@ -1,6 +1,6 @@
 'use client';
 import { cn } from '@/lib/utils';
-import { Home, Users, Dog, Sparkles, Calculator, Pill, MessageCircle, Calendar } from 'lucide-react';
+import { Home, Users, Dog, Sparkles, Calculator, Pill, MessageSquare, Calendar } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -12,7 +12,7 @@ export function MobileNav() {
         { name: 'Agenda', href: '/dashboard/agenda', icon: Calendar },
         { name: 'Pacientes', href: '/dashboard/patients', icon: Dog },
         { name: 'Tutores', href: '/dashboard/tutors', icon: Users },
-        { name: 'Chat', href: '/dashboard/chat', icon: MessageCircle },
+        { name: 'Chat', href: '/dashboard/chat', icon: MessageSquare },
         { name: 'Consulta', href: '/dashboard/consultation', icon: Sparkles, highlight: true },
         // Placeholder links for tools that we are about to build
         //{ name: 'Tools', href: '/dashboard/tools', icon: Calculator },
