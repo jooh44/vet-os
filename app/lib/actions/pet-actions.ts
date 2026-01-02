@@ -81,15 +81,6 @@ export async function deletePet(id: string) {
                 where: { petId: id }
             });
 
-            // Clean up Legacy Tables (Raw SQL because they are not in schema anymore)
-            try {
-                // Use executeRawUnsafe because table names might be case sensitive or vary
-                await tx.$executeRawUnsafe(`DELETE FROM "Appointment" WHERE "petId" = '${id}'`);
-                await tx.$executeRawUnsafe(`DELETE FROM "MedicalRecord" WHERE "petId" = '${id}'`);
-            } catch (ignore) {
-                // Ignore if tables don't exist
-            }
-
             // 2. Delete Consultations (and their Documents)
             const consultations = await tx.consultation.findMany({
                 where: { petId: id },

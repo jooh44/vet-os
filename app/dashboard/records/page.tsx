@@ -11,6 +11,8 @@ import { Search } from '@/components/ui/search';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { RecordTableRow } from '@/components/records/record-table-row';
 
+import { auth } from '@/auth';
+
 export default async function RecordsListPage({
     searchParams,
 }: {
@@ -19,16 +21,32 @@ export default async function RecordsListPage({
         page?: string;
     };
 }) {
+    const session = await auth();
+    const userId = session?.user?.id;
+
+    if (!userId) {
+        return (
+            <div className="p-6 text-center">
+                <p>Usuário não autenticado.</p>
+            </div>
+        );
+    }
+
     const query = searchParams?.query || '';
     const currentPage = Number(searchParams?.page) || 1;
 
-    const where = query ? {
-        OR: [
+    // SaaS Isolation: Vets only see their own consultations
+    const where: any = {
+        vetId: userId,
+    };
+
+    if (query) {
+        where.OR = [
             { pet: { name: { contains: query, mode: 'insensitive' } } },
             { pet: { tutor: { user: { name: { contains: query, mode: 'insensitive' } } } } },
             { diagnosis: { contains: query, mode: 'insensitive' } },
-        ] as any
-    } : {};
+        ];
+    }
 
     const records = await prisma.consultation.findMany({
         where,
