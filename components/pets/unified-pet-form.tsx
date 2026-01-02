@@ -30,6 +30,17 @@ export default function UnifiedPetForm() {
     // @ts-ignore
     const [state, dispatch] = useFormState(createPetGlobal, initialState);
     const [selectedTutorId, setSelectedTutorId] = useState('');
+    const [birthDate, setBirthDate] = useState('');
+
+    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value.replace(/\D/g, '').slice(0, 8);
+        if (value.length >= 5) {
+            value = `${value.slice(0, 2)}/${value.slice(2, 4)}/${value.slice(4)}`;
+        } else if (value.length >= 3) {
+            value = `${value.slice(0, 2)}/${value.slice(2)}`;
+        }
+        setBirthDate(value);
+    };
 
     return (
         <Card className="w-full max-w-2xl mx-auto">
@@ -85,7 +96,14 @@ export default function UnifiedPetForm() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="grid gap-2">
                             <Label htmlFor="birthDate">Data de Nascimento</Label>
-                            <Input id="birthDate" name="birthDate" type="text" placeholder="DD/MM/AAAA" />
+                            <Input
+                                id="birthDate"
+                                name="birthDate"
+                                type="text"
+                                placeholder="DD/MM/AAAA"
+                                value={birthDate}
+                                onChange={handleDateChange}
+                            />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="weight">Peso (kg)</Label>

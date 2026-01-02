@@ -55,9 +55,21 @@ export function EditPetDialog({ pet, open: externalOpen, onOpenChange: externalO
     }
 
     // Format date for display (DD/MM/AAAA)
-    const birthDateStr = pet.birthDate
+    const initialBirthDate = pet.birthDate
         ? new Date(pet.birthDate).toLocaleDateString('pt-BR')
         : '';
+
+    const [birthDate, setBirthDate] = useState(initialBirthDate);
+
+    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value.replace(/\D/g, '').slice(0, 8);
+        if (value.length >= 5) {
+            value = `${value.slice(0, 2)}/${value.slice(2, 4)}/${value.slice(4)}`;
+        } else if (value.length >= 3) {
+            value = `${value.slice(0, 2)}/${value.slice(2)}`;
+        }
+        setBirthDate(value);
+    };
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -116,7 +128,14 @@ export function EditPetDialog({ pet, open: externalOpen, onOpenChange: externalO
 
                     <div className="flex flex-col gap-2">
                         <Label htmlFor="birthDate">Data de Nascimento</Label>
-                        <Input id="birthDate" name="birthDate" type="text" placeholder="DD/MM/AAAA" defaultValue={birthDateStr} />
+                        <Input
+                            id="birthDate"
+                            name="birthDate"
+                            type="text"
+                            placeholder="DD/MM/AAAA"
+                            value={birthDate}
+                            onChange={handleDateChange}
+                        />
                     </div>
 
                     <div className="flex flex-col gap-2">
