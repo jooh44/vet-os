@@ -73,7 +73,7 @@ export default function CreatePetForm({ tutorId }: { tutorId: string }) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="grid gap-2">
                             <Label htmlFor="birthDate">Data de Nascimento</Label>
-                            <Input id="birthDate" name="birthDate" type="date" />
+                            <Input id="birthDate" name="birthDate" type="text" placeholder="DD/MM/AAAA" />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="weight">Peso (kg)</Label>

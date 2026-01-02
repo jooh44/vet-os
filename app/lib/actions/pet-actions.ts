@@ -1,5 +1,23 @@
 'use server';
 
+function parseBrazilianDate(dateStr: string | null | undefined): Date | null {
+    if (!dateStr) return null;
+
+    // Handle DD/MM/AAAA or D/M/AAAA
+    const parts = dateStr.split('/');
+    if (parts.length === 3) {
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; // JS months are 0-indexed
+        const year = parseInt(parts[2], 10);
+        const date = new Date(year, month, day);
+        if (!isNaN(date.getTime())) return date;
+    }
+
+    // Fallback to standard JS Date parsing (YYYY-MM-DD)
+    const date = new Date(dateStr);
+    return isNaN(date.getTime()) ? null : date;
+}
+
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
@@ -11,7 +29,7 @@ const UpdatePetSchema = z.object({
     species: z.string().min(1, "Espécie é obrigatória"),
     breed: z.string().optional(),
     weight: z.string().optional(), // Receive as string from form, convert to float
-    birthDate: z.string().optional(), // Receive as string YYYY-MM-DD
+    birthDate: z.string().optional(), // Receive as string DD/MM/AAAA or YYYY-MM-DD
     notes: z.string().optional(),
     allergies: z.string().optional(), // Assuming simple string or comma-separated
 });
@@ -55,7 +73,7 @@ export async function updatePet(formData: FormData) {
                 species: species as any, // Cast to any or import Species enum if available
                 breed: breed || null,
                 weight: weight ? parseFloat(weight.replace(',', '.')) : null,
-                birthDate: birthDate ? new Date(birthDate) : null,
+                birthDate: parseBrazilianDate(birthDate),
                 notes: notes || null,
                 allergies: allergies || null,
             },

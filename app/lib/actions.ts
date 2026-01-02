@@ -1,5 +1,22 @@
 'use server'
 
+function parseBrazilianDate(dateStr: string | null | undefined): Date | null {
+    if (!dateStr) return null;
+
+    // Handle DD/MM/AAAA
+    const parts = dateStr.split('/');
+    if (parts.length === 3) {
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1;
+        const year = parseInt(parts[2], 10);
+        const date = new Date(year, month, day);
+        if (!isNaN(date.getTime())) return date;
+    }
+
+    const date = new Date(dateStr);
+    return isNaN(date.getTime()) ? null : date;
+}
+
 import { signIn, signOut, auth } from '@/auth'
 import { AuthError } from 'next-auth'
 
@@ -144,7 +161,7 @@ export async function createPet(tutorIdArg: string | null | undefined, prevState
                 name,
                 species: species as any, // Cast to enum
                 breed,
-                birthDate: birthDate ? new Date(birthDate) : null,
+                birthDate: parseBrazilianDate(birthDate),
                 weight,
                 photoUrl,
                 tutorId

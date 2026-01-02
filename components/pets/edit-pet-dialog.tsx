@@ -54,9 +54,9 @@ export function EditPetDialog({ pet, open: externalOpen, onOpenChange: externalO
         }
     }
 
-    // Format date for input type="date"
+    // Format date for display (DD/MM/AAAA)
     const birthDateStr = pet.birthDate
-        ? new Date(pet.birthDate).toISOString().split('T')[0]
+        ? new Date(pet.birthDate).toLocaleDateString('pt-BR')
         : '';
 
     return (
@@ -116,7 +116,7 @@ export function EditPetDialog({ pet, open: externalOpen, onOpenChange: externalO
 
                     <div className="flex flex-col gap-2">
                         <Label htmlFor="birthDate">Data de Nascimento</Label>
-                        <Input id="birthDate" name="birthDate" type="date" defaultValue={birthDateStr} />
+                        <Input id="birthDate" name="birthDate" type="text" placeholder="DD/MM/AAAA" defaultValue={birthDateStr} />
                     </div>
 
                     <div className="flex flex-col gap-2">
