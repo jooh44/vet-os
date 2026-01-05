@@ -7,7 +7,6 @@ import { cn } from '@/lib/utils';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isSameDay, isToday } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
 
 export function CalendarView({
     initialDate = new Date(),
@@ -48,26 +47,7 @@ export function CalendarView({
         };
         fetchHighlights();
 
-        // Subscribe to Realtime changes for 'Consultation' table
-        const channel = supabase
-            .channel('calendar-highlights')
-            .on(
-                'postgres_changes',
-                {
-                    event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
-                    schema: 'public',
-                    table: 'Consultation'
-                },
-                () => {
-                    // Refetch highlights when DB changes
-                    fetchHighlights();
-                }
-            )
-            .subscribe();
-
-        return () => {
-            supabase.removeChannel(channel);
-        };
+        fetchHighlights();
     }, [currentDate]);
 
     const handleDateClick = (day: Date) => {

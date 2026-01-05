@@ -4,10 +4,9 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Send, Image as ImageIcon, Mic } from 'lucide-react';
-import { sendMessage } from '@/lib/chat-actions';
+import { sendMessage, getLatestMessages } from '@/lib/chat-actions';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { supabase } from '@/lib/supabase';
 
 interface Message {
     id: string;
@@ -31,45 +30,34 @@ export function ChatInterface({ sessionId, initialMessages, currentUserId, recip
     const formRef = useRef<HTMLFormElement>(null);
     const bottomRef = useRef<HTMLDivElement>(null);
 
-    // Realtime (Supabase)
+    // Polling fallback instead of direct Supabase Realtime
     useEffect(() => {
         setMessages(initialMessages);
 
-        const channel = supabase
-            .channel(`chat:${sessionId}`)
-            .on(
-                'postgres_changes',
-                {
-                    event: 'INSERT',
-                    schema: 'public',
-                    table: 'ChatMessage',
-                    filter: `sessionId=eq.${sessionId}`
-                },
-                (payload) => {
-                    const newMsg = payload.new as any;
-                    // Prevent duplicate if we optimistically added it?
-                    // For now, simple append.
-                    setMessages((prev) => {
-                        if (prev.find(m => m.id === newMsg.id)) return prev;
-                        return [...prev, {
-                            id: newMsg.id,
-                            content: newMsg.content,
-                            senderId: newMsg.senderId,
-                            // Fix Timezone: Supabase sends UTC string, sometimes without Z. Force UTC.
-                            createdAt: new Date(newMsg.createdAt.endsWith('Z') ? newMsg.createdAt : newMsg.createdAt + 'Z'),
-                            type: newMsg.type || 'TEXT'
-                        }];
-                    });
-                    // Scroll to bottom on new real-time message
-                    setTimeout(() => {
-                        bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    }, 100);
+        let isMounted = true;
+        const pollMessages = async () => {
+            if (!isMounted) return;
+
+            try {
+                // Fetch latest messages via Server Action
+                const latest = await getLatestMessages(sessionId);
+                if (latest && isMounted) {
+                    setMessages(latest as any);
                 }
-            )
-            .subscribe();
+            } catch (err) {
+                console.error("Polling error:", err);
+            }
+
+            // Poll every 5 seconds for a "near-realtime" feel without exposing keys
+            if (isMounted) {
+                setTimeout(pollMessages, 5000);
+            }
+        };
+
+        pollMessages();
 
         return () => {
-            supabase.removeChannel(channel);
+            isMounted = false;
         };
     }, [sessionId, initialMessages]);
 

@@ -83,3 +83,13 @@ export async function startChat(tutorId: string) {
 
     return newSession.id;
 }
+
+export async function getLatestMessages(sessionId: string) {
+    const session = await auth();
+    if (!session?.user?.id) return null;
+
+    return await prisma.chatMessage.findMany({
+        where: { sessionId },
+        orderBy: { createdAt: 'asc' },
+    });
+}
