@@ -55,7 +55,7 @@ export async function processConsultationAudio(formData: FormData) {
                 structuredOutputs: false // Loose mode for experimental models
             }),
             schema: consultationSchema,
-            prompt: 'You are a Veterinary Assistant AI. Listen to this consultation audio and extract medical information into a structured JSON. If information is missing, infer reasonably from context or use "Não informado". Translate technical terms to professional Portuguese.',
+            system: 'You are a Veterinary Assistant AI. Listen to this consultation audio and extract medical information into a structured JSON. If information is missing, infer reasonably from context or use "Não informado". Translate technical terms to professional Portuguese.',
             messages: [
                 {
                     role: 'user',
