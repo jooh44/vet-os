@@ -13,7 +13,7 @@ if (typeof globalThis.File === 'undefined') {
 
 export async function processConsultationAudio(formData: FormData) {
     try {
-        console.log("Starting Gemini 2.0 Flash processing via Direct Fetch...");
+        console.log("Starting Gemini 1.5 Flash processing via Direct Fetch...");
         const audioFile = formData.get('audio') as unknown as File;
         if (!audioFile) {
             throw new Error('No audio file provided');
@@ -50,8 +50,8 @@ export async function processConsultationAudio(formData: FormData) {
         
         If information is missing, infer reasonably from context or use "Não informado". Translate technical terms to professional Portuguese.`;
 
-        // URL for Gemini 2.0 Flash Experimental
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`;
+        // URL for Gemini 1.5 Flash (Stable, Free Tier available)
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
         const response = await fetch(url, {
             method: 'POST',
