@@ -1,7 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Hardcoded keys to ensure availability during Coolify build
-const supabaseUrl = 'https://rhxticpmcdzbmnfblkuk.supabase.co';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 // Admin client needs the SERVICE ROLE KEY
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
